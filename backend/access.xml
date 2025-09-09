@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<access component="com_adsmanager">
+	<section name="component">
+        <!-- Actions to be used in our global component -->
+		<!--<action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />-->
+		<action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />
+		<!--<action name="core.create" title="JACTION_CREATE" description="JACTION_CREATE_COMPONENT_DESC" />
+		<action name="core.delete" title="JACTION_DELETE" description="JACTION_DELETE_COMPONENT_DESC" />
+		<action name="core.edit" title="JACTION_EDIT" description="JACTION_EDIT_COMPONENT_DESC" />
+		<action name="core.edit.state" title="JACTION_EDITSTATE" description="JACTION_EDITSTATE_COMPONENT_DESC" />
+		<action name="core.edit.own" title="JACTION_EDITOWN" description="JACTION_EDITOWN_COMPONENT_DESC" />-->
+        
+        <!-- Configuration -->
+		<!--<action name="adsmanager.editconfiguration" title="edit configuration" description="" />-->
+		<action name="adsmanager.accessconfiguration" title="Access configuration" description="" />
+
+        <!-- Search module -->
+		<!--<action name="adsmanager.editsearchmodule" title="edit search module" description="" />-->
+		<action name="adsmanager.accesssearchmodule" title="Access search module" description="" />
+
+        <!-- Search page -->
+		<!--<action name="adsmanager.editsearchpage" title="edit search page" description="" />-->
+		<action name="adsmanager.accesssearchpage" title="Access search page" description="" />
+        
+        <!-- Position details -->
+		<!--<action name="adsmanager.editpositiondetails" title="edit position details" description="" />-->
+		<action name="adsmanager.accesspositiondetails" title="Access position details" description="" />
+
+        <!-- Category -->
+        <!--<action name="adsmanager.createcategory" title="create category" description="" />
+		<action name="adsmanager.deletecategory" title="delete category" description="" />
+		<action name="adsmanager.editcategory" title="edit category" description="" />-->*
+		<action name="adsmanager.accesscategory" title="Access category" description="" />
+
+        <!-- Field -->
+        <!--<action name="adsmanager.createfield" title="create field" description="" />
+		<action name="adsmanager.deletefield" title="delete field" description="" />
+		<action name="adsmanager.editfield" title="edit field" description="" />-->
+		<action name="adsmanager.accessfield" title="Access field" description="" />
+
+		<!-- Layout - Contentform -->
+		<action name="adsmanager.accesslayoutcontentform" title="Access layout content form" description="" />
+
+        <!-- Layout - List -->
+        <!--<action name="adsmanager.createlayoutlist" title="create layout list" description="" />
+		<action name="adsmanager.deletelayoutlist" title="delete layout list" description="" />
+		<action name="adsmanager.editlayoutlist" title="edit layout list" description="" />-->
+		<action name="adsmanager.accesslayoutlist" title="Access layout list" description="" />
+
+        <!-- Content -->
+        <!--<action name="adsmanager.createcontent" title="create content" description="" />
+		<action name="adsmanager.deletecontent" title="delete content" description="" />
+		<action name="adsmanager.editcontent" title="edit content" description="" />
+		<action name="adsmanager.publishcontent" title="publish content" description="" />
+		<action name="adsmanager.unpublishcontent" title="unpublish content" description="" />
+		<action name="adsmanager.duplicatecontent" title="duplicate content" description="" />-->
+		<action name="adsmanager.accesscontent" title="Access content" description="" />
+
+        <!-- Plugin -->
+		<!--<action name="adsmanager.deleteplugin" title="delete plugin" description="" />-->
+		<action name="adsmanager.accessplugin" title="Access plugin" description="" />
+
+        <!-- Field image -->
+		<!--<action name="adsmanager.deletefieldimage" title="delete field image" description="" />-->
+		<action name="adsmanager.accessfieldimage" title="Access field image" description="" />
+
+        <!-- Mail -->
+        <!--<action name="adsmanager.createmail" title="create mail" description="" />
+		<action name="adsmanager.deletemail" title="delete mail" description="" />
+		<action name="adsmanager.editmail" title="edit mail" description="" />-->
+		<action name="adsmanager.accessmail" title="Access mail" description="" />
+
+		<!-- Export -->
+		<action name="adsmanager.accessexport" title="Access export" description="" />
+
+		<!-- Import -->
+		<action name="adsmanager.accessimport" title="Access import" description="" />
+	</section>
+</access>

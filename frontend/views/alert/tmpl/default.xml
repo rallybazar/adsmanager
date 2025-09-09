@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+   <layout title="Alert">
+      <message>
+         <![CDATA[Alert]]>
+      </message>
+   </layout>
+   <state>
+      <name>Adsmanager Alert</name>
+      <description>Adsmanager Alert</description>
+      <url addpath="/administrator/components/com_adsmanager/elements">
+        <param name="rootid" type="AdsmanagerCategory" section="com_adsmanager" default="0" label="Root Category" description="CATSELECTADSMANAGER" />
+      </url>
+      <params>
+      </params>
+   </state>
+   <!-- Add fields to the request variables for the layout. -->
+   <fields name="request">
+
+   </fields>
+</metadata>

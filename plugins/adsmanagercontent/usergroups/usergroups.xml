@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="adsmanagercontent" method="upgrade">
+    <name>AdsManagerContent - Usergroups</name>
+    <author>Juloa</author>
+    <creationDate>February 2015</creationDate>
+    <copyright>Copyright (C) 2011 Juloa.com. All rights reserved.</copyright>
+    <license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+    <authorEmail>support@juloa.com</authorEmail>
+    <authorUrl>http://www.Juloa.com</authorUrl>
+    <version>3.0.3</version>
+    <description>
+    Add the filter by usergroups for the ads
+    </description>
+    <files>
+        <filename plugin="usergroups">usergroups.php</filename>
+        <filename>index.html</filename>
+    </files>
+    <config>
+		<fields name="params">
+			<fieldset name="basic">
+				
+			</fieldset>
+		</fields>
+	</config>
+</extension>

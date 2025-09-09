@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="2.5" method="upgrade" client="site">
+	<name>mod_adsmanager_global_filter</name>
+	<author>Juloa</author>
+	<creationDate>October 2013</creationDate>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>support@juloa.com</authorEmail>
+	<authorUrl>www.Juloa.com</authorUrl>
+	<version>3.2</version>
+	<description>AdsManager Global Filter Module</description>
+	<files>
+		<filename module="mod_adsmanager_global_filter">mod_adsmanager_global_filter.php</filename>
+		<filename>mod_adsmanager_global_filter.xml</filename>
+		<filename>index.html</filename>
+        <filename>tmpl/index.html</filename>
+        <filename>tmpl/default.php</filename>
+	</files>
+	<languages folder="language">
+        <language tag="en-GB">en-GB.mod_adsmanager_global_filter.ini</language>
+        <language tag="en-GB">en-GB.mod_adsmanager_global_filter.sys.ini</language>
+        <language tag="fr-FR">fr-FR.mod_adsmanager_global_filter.ini</language>
+        <language tag="fr-FR">fr-FR.mod_adsmanager_global_filter.sys.ini</language>
+    </languages>
+	<config>
+		<fields name="params">
+			<fieldset name="advanced">		
+				<field
+					name="moduleclass_sfx"
+					type="text"
+					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL" 
+					description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+				<field
+					name="layout"
+					type="modulelayout"
+					label="JFIELD_ALT_LAYOUT_LABEL"
+					description="JFIELD_ALT_MODULE_LAYOUT_DESC" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>

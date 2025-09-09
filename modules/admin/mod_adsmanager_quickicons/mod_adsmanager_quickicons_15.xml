@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install version="1.5" type="module" client="administrator" method="upgrade">
+	<name>Adsmanager Quick Icons</name>
+	<author>Thomas PAPIN</author>
+	<authorEmail>support@juloa.com</authorEmail>
+	<authorUrl>http://www.juloa.com</authorUrl>
+	<creationDate>08-07-2013</creationDate>
+	<copyright>Copyright (C) 2010-2014 Juloa.com. All rights reserved.</copyright>
+	<license>GNU GPL v3</license>
+	<version>1.0</version>
+	<description><![CDATA[
+	<h1>Adsmanager Quick Ads Access Icon Module</h1>
+	<p>This quick access icon makes your life easier. Now you can quick access your ads to manage then.</p>
+	]]></description>
+	<files>
+		<filename module="mod_adsmanager_quickicons">mod_adsmanager_quickicons.php</filename>
+		<filename>tmpl/index.html</filename>
+        <filename>tmpl/default.php</filename>
+	</files>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.mod_adsmanager_quickicons.ini</language>
+		<language tag="en-GB">en-GB/en-GB.mod_adsmanager_quickicons.sys.ini</language>
+		<language tag="fr-FR">fr-FR/fr-FR.mod_adsmanager_quickicons.ini</language>
+		<language tag="fr-FR">fr-FR/fr-FR.mod_adsmanager_quickicons.sys.ini</language>
+	</languages>
+	<params>
+		<param name="adsmanager_configuration_enabled" type="radio" default="0" label="Display AdsManager Configuration" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="adsmanager_fields_enabled" type="radio" default="0" label="Display AdsManager Fields" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="adsmanager_columns_enabled" type="radio" default="0" label="Display AdsManager List View" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="adsmanager_positions_enabled" type="radio" default="0" label="Display AdsManager Details View" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="adsmanager_categories_enabled" type="radio" default="0" label="Display AdsManager Categories" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="adsmanager_contents_enabled" type="radio" default="1" label="Display AdsManager Ads" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		
+		<param name="paidsystem_configuration_enabled" type="radio" default="1" label="Display Paidsystem Configuration" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="paidsystem_categories_enabled" type="radio" default="0" label="Display categories paid options" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="paidsystem_fields_enabled" type="radio" default="0" label="Display fields paid options" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="paidsystem_durations_enabled" type="radio" default="1" label="Display duration options" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="paidsystem_tops_enabled" type="radio" default="1" label="Display top options" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="paidsystem_highlights_enabled" type="radio" default="1" label="Display hightlight options" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="paidsystem_featureds_enabled" type="radio" default="1" label="Display featured options" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		
+		<param name="invoicing_cpanel_enabled" type="radio" default="1" label="Display Invoices Statitics" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="invoicing_invoices_enabled" type="radio" default="1" label="Display Invoicing Invoices" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="invoicing_quotes_enabled" type="radio" default="0" label="Display Invoicing Quotes" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="invoicing_coupons_enabled" type="radio" default="1" label="Display Invoicing Coupons" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		
+		<param name="virtualmoney_credits_enabled" type="radio" default="1" label="Display VirtualMoney User Balances" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+		<param name="virtualmoney_packs_enabled" type="radio" default="0" label="Display VirtualMoney Packs" description="">
+			<option value="0">No</option>
+			<option value="1">Yes</option>
+		</param>
+	</params>
+</install>

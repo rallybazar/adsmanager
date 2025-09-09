@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<falang type="contentelement">
+  <name>Adsmanager - Configuration</name>
+  <author>SARL JULOA</author>
+  <version>1.1</version>
+  <description>AdsManager Configuration</description>
+  <reference>
+  	<table name="adsmanager_config">
+  		<field type="referenceid" name="id" translate="0">ID</field>
+		<field type="titletext" name="version" translate="0">Version</field>
+
+		<field type="htmltext" name="fronttext" translate="1">FrontText</field>
+		<field type="htmltext" name="rules_text" translate="1">RulesText</field>
+		
+		<field type="text" name="recall_subject" translate="1">Recall Subject</field>
+  		<field type="htmltext" name="recall_text" translate="1">Recall Body</field>
+  			
+  		<field type="text" name="new_subject" translate="1">New Subject</field>
+  		<field type="htmltext" name="new_text" translate="1">New Body</field>
+  		
+  		<field type="text" name="update_subject" translate="1">Update Subject</field>
+  		<field type="htmltext" name="update_text" translate="1">Update Body</field>
+  		
+  		<field type="text" name="admin_new_subject" translate="1">Admin New Subject</field>
+  		<field type="htmltext" name="admin_new_text" translate="1">Admin New Body</field>
+  		
+  		<field type="text" name="admin_update_subject" translate="1">Admin Update Subject</field>
+  		<field type="htmltext" name="admin_update_text" translate="1">Admin Update Body</field>
+  		
+  		<field type="text" name="waiting_validation_subject" translate="1">Waiting Validation Subject</field>
+  		<field type="htmltext" name="waiting_validation_text" translate="1">Waiting Validation Body</field>
+  		
+  		<field type="text" name="validation_subject" translate="1">Validation Subject</field>
+  		<field type="htmltext" name="validation_text" translate="1">Validation Body</field>
+  		
+  		<field type="text" name="expiration_subject" translate="1">Expiration Subject</field>
+  		<field type="htmltext" name="expiration_text" translate="1">Expiration Body</field>
+	</table>
+    	<component>
+  		<form>com_adsmanager</form>
+  	</component>
+  </reference>
+  <translationfilters>
+  </translationfilters>
+</falang>

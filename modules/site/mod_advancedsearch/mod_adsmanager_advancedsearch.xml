@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="2.5" method="upgrade" client="site">
+	<name>mod_adsmanager_advancedsearch</name>
+	<author>Thomas Papin</author>
+	<creationDate>November 2015</creationDate>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>support@juloa.com</authorEmail>
+	<authorUrl>www.Juloa.com</authorUrl>
+	<version>3.2</version>
+	<description>AdsManager Search Module</description>
+	<files>
+		<filename module="mod_adsmanager_advancedsearch">mod_adsmanager_advancedsearch.php</filename>
+		<filename>mod_adsmanager_advancedsearch.xml</filename>
+		<filename>index.html</filename>
+        <filename>tmpl/index.html</filename>
+        <filename>tmpl/default.php</filename>
+	<filename>img/index.html</filename>
+        <filename>img/arrow_down.png</filename>
+	<filename>img/arrow_up.png</filename>
+	</files>
+	<languages folder="language">
+        <language tag="en-GB">en-GB.mod_adsmanager_advancedsearch.ini</language>
+        <language tag="en-GB">en-GB.mod_adsmanager_advancedsearch.sys.ini</language>
+        <language tag="fr-FR">fr-FR.mod_adsmanager_advancedsearch.ini</language>
+        <language tag="fr-FR">fr-FR.mod_adsmanager_advancedsearch.sys.ini</language>
+    </languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+	            <field name="search_by_cat" type="radio" default="1" label="MOD_ADSMANAGER_SEARCH_CAT" description="">
+					<option value="0">MOD_ADSMANAGER_SEARCH_NO</option>
+					<option value="1">MOD_ADSMANAGER_SEARCH_YES</option>
+				</field>
+                <field name="display_cat_label" type="radio" default="0" label="MOD_ADSMANAGER_DISPLAY_CAT_LABEL" description="MOD_ADSMANAGER_DISPLAY_CAT_LABEL_DESC">
+					<option value="0">MOD_ADSMANAGER_SEARCH_NO</option>
+					<option value="1">MOD_ADSMANAGER_SEARCH_YES</option>
+				</field>
+                <field name="search_by_text" type="radio" default="1" label="MOD_ADSMANAGER_SEARCH_ADVANCED_TEXT" description="">
+					<option value="0">MOD_ADSMANAGER_SEARCH_NO</option>
+					<option value="1">MOD_ADSMANAGER_SEARCH_YES</option>
+				</field>
+				<field name="keep_itemid" type="radio" default="0" label="MOD_ADSMANAGER_SEARCH_KEEP_ITEMID" description="MOD_ADSMANAGER_SEARCH_KEEP_ITEMID_DESC">
+					<option value="0">MOD_ADSMANAGER_SEARCH_NO</option>
+					<option value="1">MOD_ADSMANAGER_SEARCH_YES</option>
+				</field>
+			</fieldset>
+			<fieldset name="advanced">		
+				<field name="rootid" type="text" default="" size="4" label="MOD_ADSMANAGER_SEARCH_ROOTCATEGORY" description="MOD_ADSMANAGER_SEARCH_ROOTCATEGORY_DESC" />
+				<field
+					name="moduleclass_sfx"
+					type="text"
+					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL" 
+					description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+				<field
+					name="layout"
+					type="modulelayout"
+					label="JFIELD_ALT_LAYOUT_LABEL"
+					description="JFIELD_ALT_MODULE_LAYOUT_DESC" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>

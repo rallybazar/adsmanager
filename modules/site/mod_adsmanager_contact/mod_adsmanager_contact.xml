@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<install type="module" version="1.5" method="upgrade">
+	<name>mod_adsmanager_contact</name>
+	<author>Thomas Papin</author>
+	<creationDate>September 2012</creationDate>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>support@juloa.com</authorEmail>
+	<authorUrl>www.Juloa.com</authorUrl>
+	<version>2.7.0 Stable</version>
+	<description>AdsManager Contact Module</description>
+	<files>
+		<filename module="mod_adsmanager_contact">mod_adsmanager_contact.php</filename>
+		<filename>mod_adsmanager_contact.xml</filename>
+		<filename>index.html</filename>
+        <filename>tmpl/index.html</filename>
+        <filename>tmpl/default.php</filename>
+	</files>
+
+	<params>
+		
+	</params>
+	<config>
+	
+	</config>
+</install>

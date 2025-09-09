@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cbinstall version="1.0" type="plugin" group="user" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:../../../../../validation/ahawow.xsd">
+	<name>AdsManagerFavorite-Tab</name>
+	<author>Juloa</author>
+	<creationDate>December 2013</creationDate>
+	<copyright>(C) 2006-2013 Juloa</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>webmaster@Juloa.com</authorEmail>
+	<authorUrl>http://www.Juloa.com</authorUrl>
+	<version>2.0</version>
+	<description>Displays a tab with user favorites Ads from AdsManager</description>
+	<files>
+		<filename plugin="adsmanagerfavorite.plugin">adsmanagerfavorite.plugin.php</filename>
+		<filename>index.html</filename>
+	</files>
+    <tabs>
+		<tab name="Favorites Ads" translated-name="Ads" description="" class="AdsManagerFavoriteTab" fields="0" sys="1" position="cb_tabmain" displaytype="tab">
+			<params>
+			</params>
+		</tab>
+	</tabs>
+</cbinstall>
