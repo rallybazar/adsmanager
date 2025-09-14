@@ -303,11 +303,15 @@ if ($conf->metadata_mode != 'nometadata') {
 <div class="btn"><?php echo JText::_('ADSMANAGER_BACK_TEXT'); ?></div>
 </a>
 </div>
+<br>
 <div class="ad-detail-bottom">
-	<?php 
-		// Túto funkciu opraviť, nezobrazuje zoznam podobných inzerátov
-		// $this->displayContents($this->contents,$this->nbimages); 
-	?>
+    <?php 
+    if ($this->conf->display_last == 2) {
+        // $this->contents tu obsahuje posledné inzeráty z danej kategórie
+        $this->displayLastAdsList($this->contents, 6); // max 6 posledných
+    } 
+    $this->general->endTemplate(); 
+    ?>
 </div>
 <script type="text/JavaScript">
 jQ(function() {
