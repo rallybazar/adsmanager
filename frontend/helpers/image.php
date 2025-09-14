@@ -132,6 +132,11 @@ class TImage {
 
 			var text_confirm_delete_image = <?php echo json_encode(JText::_('ADSMANAGER_CONFIRM_DELETE_IMAGE'))?>;
 
+			<?php
+			$enable_resize = true; // zmeň na false ak chceš vypnúť resize
+			$resize_quality = 90;  // 70–90 je bezpečnejšie než 100
+			?>
+
 			var selectedTmpImages = [];
 			var selectedImages = []
 			
@@ -260,18 +265,22 @@ class TImage {
 					// General settings
 					runtimes : 'html5,flash,html4',
 					url : upload_url,
-					max_file_size : '10mb',
+					max_file_size : '16mb',
 					chunk_size : '1mb',
 					unique_names : true,
-			
+
 					// Resize images on clientside if we can
-					resize : {width : max_width, height : max_height, quality : 100},
-			
+					<?php if ($enable_resize): ?>
+					resize : {width : max_width, height : max_height, quality : <?php echo $resize_quality; ?>},
+					<?php else: ?>
+					resize : false,
+					<?php endif; ?>
+
 					// Specify what files to browse for
 					filters : [
 						{title : "Image files", extensions : "jpeg,jpg,gif,png"}
 					],
-			
+
 					// Flash settings
 					flash_swf_url : base_url+'components/com_adsmanager/js/plupload/plupload.flash.swf',
 
@@ -332,7 +341,14 @@ class TImage {
 	static function displayImageUploaderFormChecker($nbcats=1) {
 		?>
 		nbCurrentImages = document.getElementById('nbCurrentImages').value;
-	
+
+		// kontrola, či upload ešte beží
+		var uploader = jQ("#imagesupload").pluploadQueue();
+		if (uploader && uploader.total.queued > 0) {
+			errorMSG += "Prosím, počkajte kým sa dokončí nahrávanie obrázkov.\n";
+			iserror = 1;
+		}
+
 		if(max_total_file_count < nbCurrentImages) {
 			if(max_total_file_count == 1){
 				errorMSG += "Veuillez selectionner l'option photos pour pouvoir mettre plus d'une image."+'\n';
@@ -343,4 +359,5 @@ class TImage {
 		}
 		<?php
 	}
+
 }

@@ -1115,25 +1115,26 @@ class AdsManagerController extends TController
 		}
 
 		if (($fileName != "")&&(in_array($fileName_b,array('jpg','jpeg')))) {
-			function image_fix_orientation($path){
+			function image_fix_orientation($path) {
 				$image = imagecreatefromjpeg($path);
-                if(function_exists('exif_read_data')) {
-                    $exif = exif_read_data($path);
-                    if (!empty($exif['Orientation'])) {
-                        switch ($exif['Orientation']) {
-                            case 3:
-                                $image = imagerotate($image, 180, 0);
-                                break;
-                            case 6:
-                                $image = imagerotate($image, -90, 0);
-                                break;
-                            case 8:
-                                $image = imagerotate($image, 90, 0);
-                                break;
-                        }
-                        imagejpeg($image, $path);
-                    }
-                }
+				if (!$image) return;
+
+				if(function_exists('exif_read_data')) {
+					$exif = @exif_read_data($path);
+					if (!empty($exif['Orientation'])) {
+						switch ($exif['Orientation']) {
+							case 3:
+								break;
+							case 6:
+								break;
+							case 8:
+								break;
+						}
+						imagejpeg($image, $path);
+					}
+				}
+
+				imagedestroy($image);
 			}
 
 			$path = $targetDir . DIRECTORY_SEPARATOR . $fileName;
@@ -1141,7 +1142,6 @@ class AdsManagerController extends TController
 				image_fix_orientation($path);
 			}
 		}
-
 
 		// Return JSON-RPC response
 		die('{"jsonrpc" : "2.0", "result" : null, "id" : "id","tmpfile" : "'.$fileName.'"}');
@@ -1290,25 +1290,26 @@ class AdsManagerController extends TController
 		}
 
 		if (($fileName != "")&&(in_array($fileName_b,array('jpg','jpeg')))) {
-			function image_fix_orientation($path){
+			function image_fix_orientation($path) {
 				$image = imagecreatefromjpeg($path);
+				if (!$image) return;
+
 				if(function_exists('exif_read_data')) {
-					$exif = exif_read_data($path);
+					$exif = @exif_read_data($path);
 					if (!empty($exif['Orientation'])) {
 						switch ($exif['Orientation']) {
 							case 3:
-								$image = imagerotate($image, 180, 0);
 								break;
 							case 6:
-								$image = imagerotate($image, -90, 0);
 								break;
 							case 8:
-								$image = imagerotate($image, 90, 0);
 								break;
 						}
 						imagejpeg($image, $path);
 					}
 				}
+
+				imagedestroy($image);
 			}
 
 			$path = $targetDir . DIRECTORY_SEPARATOR . $fileName;
@@ -1316,7 +1317,6 @@ class AdsManagerController extends TController
 				image_fix_orientation($path);
 			}
 		}
-
 
 		// Return JSON-RPC response
 		die('{"jsonrpc" : "2.0", "result" : null, "id" : "id","tmpfile" : "'.$fileName.'"}');

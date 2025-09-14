@@ -1,0 +1,159 @@
+<?php
+/**
+ * @package     AdsManager
+ * @copyright   Copyright (C) 2010-2014 Juloa.com
+ * @license     GNU/GPL
+ */
+defined('_JEXEC') or die('Restricted access');
+?>
+
+<div class="container-fluid">
+
+    <!-- Nadpis kategórie alebo vyhľadávaného výrazu -->
+    <div class="mb-3">
+        <?php if (!empty($this->text_search)): ?>
+            <h2><?php echo htmlspecialchars($this->text_search); ?></h2>
+        <?php else: ?>
+            <h2>
+                <?php 
+                if (isset($this->catid) && $this->catid != 0) {
+                    echo JText::_($this->list_name);
+                } else {
+                    echo JText::_('ADSMANAGER_ALL_ADS');
+                }
+                ?>
+            </h2>
+        <?php endif; ?>
+    </div>
+
+    <?php if (!empty($this->contents)): ?>
+        <table class="table w-100">
+            <tbody>
+            <?php foreach($this->contents as $content): 
+                $linkTarget = TRoute::_("index.php?option=com_adsmanager&view=details&id=".$content->id."&catid=".$content->catid);
+            ?>
+                <tr class="adsmanager_table_description trcategory_<?php echo $content->catid; ?>" 
+                    style="transition: background-color 0.3s;"
+                    onclick="window.location='<?php echo $linkTarget; ?>'">
+
+                    <!-- Ľavý stĺpec: fotka -->
+                    <td style="width: 35%; vertical-align: top; padding: 15px; text-align:center;">
+                        <?php if (isset($content->images[0])): ?>
+                            <a href="<?php echo $linkTarget; ?>">
+                                <img class="fad-image img-fluid rounded" 
+                                     src="<?php echo JURI_IMAGES_FOLDER."/".$content->images[0]->thumbnail; ?>" 
+                                     alt="<?php echo htmlspecialchars($content->ad_headline); ?>" />
+                            </a>
+                        <?php else: ?>
+                            <a href="<?php echo $linkTarget; ?>">
+                                <img class="fad-image img-fluid rounded" 
+                                     src="<?php echo ADSMANAGER_NOPIC_IMG; ?>" 
+                                     alt="nopic" />
+                            </a>
+                        <?php endif; ?>
+                    </td>
+
+                    <!-- Pravý stĺpec: nadpis + info -->
+                    <td style="width: 65%; vertical-align: top; padding: 15px;">
+                        <div style="display:flex; flex-direction:column; justify-content:flex-start; height:100%;">
+
+                            <!-- Nadpis s linkom BOLD, margin-top 0 -->
+                            <h4 class="fw-bold mb-2 text-dark juloawrapper" style="margin-top:0;">
+                                <a href="<?php echo $linkTarget; ?>" class="text-dark">
+                                    <b><?php echo $content->ad_headline; ?></b>
+                                </a>
+                            </h4>
+
+                            <!-- Dynamické polia bez BOLD -->
+                            <?php foreach($this->columns as $col): ?>
+                                <div class="mb-1 text-dark column_<?php echo $col->id; ?>">
+                                    <?php 
+                                    if (isset($this->fColumns[$col->id])) {
+                                        foreach($this->fColumns[$col->id] as $field) {
+                                            $c = $this->field->showFieldValue($content,$field); 
+                                            if ($c) {
+                                                // Pole už nebude bold
+                                                $title = $this->field->showFieldTitle(@$content->catid,$field);
+                                                echo $title ? htmlspecialchars($title) . ": " : "";
+                                                echo "$c<br/>";
+                                            }
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                            <?php endforeach; ?>
+
+                            <!-- Info: užívateľ, dátum, views, NEW/HOT, favorite -->
+                            <div class="mt-2 text-dark">
+                                <?php 
+                                if($content->userid != 0){
+                                    echo JText::_('ADSMANAGER_FROM')." ";
+                                    $target = TLink::getUserAdsLink($content->userid);
+                                    echo $this->conf->display_fullname == 1 
+                                        ? "<a href='".$target."' class='text-dark'>".$content->fullname."</a>" 
+                                        : "<a href='".$target."' class='text-dark'>".$content->user."</a>";
+                                    echo " | ";
+                                }
+                                ?>
+                                <?php echo $this->reorderDate($content->date_created); ?>
+                                | <?php echo sprintf(JText::_('ADSMANAGER_VIEWS'),$content->views); ?>
+
+                                <?php if ($this->conf->show_new && $this->isNewcontent($content->date_created,$this->conf->nbdays_new)): ?>
+                                    | <span class="badge bg-success">NEW</span>
+                                <?php endif; ?>
+
+                                <?php if ($this->conf->show_hot && $content->views >= $this->conf->nbhits): ?>
+                                    | <span class="badge bg-danger">HOT</span>
+                                <?php endif; ?>
+
+                                <?php if ($this->conf->show_favorite): ?>
+                                    | <span class="favorite_ads" id="fav_<?php echo $content->id; ?>">
+                                        <?php echo in_array($content->id,$this->favorites) 
+                                            ? JText::_('ADSMANAGER_REMOVE_FAVORITE') 
+                                            : JText::_('ADSMANAGER_ADD_FAVORITE'); ?>
+                                      </span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <div class="alert alert-warning mt-3">
+            <?php 
+            if (!empty($this->text_search)) {
+                echo JText::sprintf('ADSMANAGER_SELECT_CATEGORY_NO_RESULT', htmlspecialchars($this->text_search));
+            } else {
+                echo JText::_('ADSMANAGER_SELECT_CATEGORY_NO_RESULT');
+            }
+            ?>
+        </div>
+    <?php endif; ?>
+</div>
+
+<style>
+.adsmanager_table_description {
+    border-top: 1px solid #dee2e6;
+    border-bottom: 1px solid #dee2e6;
+    cursor: pointer;
+}
+.adsmanager_table_description:hover {
+    background-color: #faf2cc;
+}
+.adsmanager_table_description td img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 10px;
+}
+.juloawrapper h4 {
+    font-size: 17.5px;
+    margin-top:0; /* zarovnanie s hornou hranou obrázka */
+}
+.mb-3 h2 {
+    font-weight: normal;
+    margin-top: 0; /* voliteľné, ak chceš zarovnať k obsahu */
+}
+</style>

@@ -109,8 +109,8 @@
   *width: 6.329787234042553%;
 }
 .juloawrapper .container-fluid {
-  padding-right: 20px;
-  padding-left: 20px;
+  padding-right: 0px;
+  padding-left: 0px;
   *zoom: 1;
 }
 .juloawrapper .container-fluid:before,

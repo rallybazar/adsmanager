@@ -145,7 +145,7 @@ class AdsmanagerViewResult extends TView
 		$positions = array();
 		$fDisplay = array();
 		
-		if ($mode == 0) {
+		if ($mode == 0 || $mode == 4) {
 			$columns = $columnmodel->getColumns($catid);
 			$fcolumns = $fieldmodel->getFieldsbyColumns();
 			$this->assignRef('columns',$columns);
@@ -157,7 +157,6 @@ class AdsmanagerViewResult extends TView
 			$this->assignRef('positions',$positions);
 			$this->assignRef('fDisplay',$fDisplay);
 		}
-		
 		
 		$filters['publish'] =  1;
 		if ($catid != 0)

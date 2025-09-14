@@ -1557,10 +1557,10 @@ class Com_AdsmanagerInstallerScript
 	<table width="100%" border="0">
 	   <tr>
 	      <td>
-	      Thank you for using AdsManager 3.3 Beta!<br/><br/>
+	      Thank you for using AdsManager 3.3.1!<br/><br/>
 		  Plugin was edited for rallybazar.sk by Mateo
 		 <p>
-			<em>mateo.rallybazar@acrt.sk</em>
+			<em>info@rallybazar.sk</em>
 		 </p>
 	      </td>
 	      <td>

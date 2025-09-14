@@ -146,6 +146,8 @@ else
             echo $this->loadTemplate('list');
         } elseif($this->mode == 1) { 
             echo $this->loadTemplate('expand');
+        } elseif($this->mode == 4) {
+            echo $this->loadTemplate('panel'); // nový sub-template
         } else {
             echo $this->loadTemplate('grid');
         }

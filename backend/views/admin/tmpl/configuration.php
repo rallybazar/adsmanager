@@ -389,6 +389,7 @@ echo $tabs->startPanel(JText::_('ADSMANAGER_TAB_DISPLAY'), "display-page");
 		<td><?php echo JText::_('ADSMANAGER_DISPLAY_MODE'); ?></td>
 		<td>
 		<select id='display_expand' name='display_expand'>
+			<option value='4' <?php if ($this->conf->display_expand == 4) { echo "selected"; } ?>><?php echo JText::_('ADSMANAGER_PANEL_MODE'); ?></option>
 			<option value='2' <?php if ($this->conf->display_expand == 2) { echo "selected"; } ?>><?php echo JText::_('ADSMANAGER_SHORT_EXPAND_AND_GRID_MODE'); ?></option>
 			<option value='3' <?php if ($this->conf->display_expand == 3) { echo "selected"; } ?>><?php echo JText::_('ADSMANAGER_GRID_MODE'); ?></option>
 			<option value='1' <?php if ($this->conf->display_expand == 1) { echo "selected"; } ?>><?php echo JText::_('ADSMANAGER_EXPAND_MODE'); ?></option>

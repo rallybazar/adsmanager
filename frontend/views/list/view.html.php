@@ -260,7 +260,7 @@ class AdsmanagerViewList extends TView
 		$positions = array();
 		$fDisplay = array();
 		
-		if ($mode == 0) {
+		if ($mode == 0 || $mode == 4) {
 			$columns = $columnmodel->getColumns($catid);
 			$fcolumns = $fieldmodel->getFieldsbyColumns();
 			$this->assignRef('columns',$columns);	
@@ -272,8 +272,6 @@ class AdsmanagerViewList extends TView
 			$this->assignRef('positions',$positions);	
 			$this->assignRef('fDisplay',$fDisplay);	
 		}
-		
-		
 		
 		$this->assignRef('conf',$conf);
 		$this->assignRef('userid',$user->id);
