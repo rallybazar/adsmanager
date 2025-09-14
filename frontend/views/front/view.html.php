@@ -124,6 +124,107 @@ class AdsmanagerViewFront extends TView
 	<br />
 	<?php
 	}
+
+	function displayLastAdsList($contents, $nb = 5) {
+		if (empty($contents) || !is_array($contents)) return;
+
+		$lastContents = array_slice($contents, 0, $nb);
+		?>
+		<div class="container-fluid">
+			<h4 class="mb-3 text-dark"><?php echo JText::_('ADSMANAGER_LAST_ADS'); ?></h4>
+
+			<?php if (!empty($lastContents)): ?>
+			<table class="table w-100">
+				<tbody>
+				<?php foreach($lastContents as $content):
+					$linkTarget = TRoute::_("index.php?option=com_adsmanager&view=details&id=".$content->id."&catid=".$content->catid);
+				?>
+					<tr class="adsmanager_table_description trcategory_<?php echo $content->catid; ?>" 
+						style="transition: background-color 0.3s;"
+						onclick="window.location='<?php echo $linkTarget; ?>'">
+
+						<!-- Ľavý stĺpec: fotka -->
+						<td style="width: 35%; vertical-align: top; padding: 15px; text-align:center;">
+							<?php if (isset($content->images[0])): ?>
+								<a href="<?php echo $linkTarget; ?>">
+									<img class="fad-image img-fluid rounded" 
+										src="<?php echo JURI_IMAGES_FOLDER."/".$content->images[0]->thumbnail; ?>" 
+										alt="<?php echo htmlspecialchars($content->ad_headline); ?>" />
+								</a>
+							<?php else: ?>
+								<a href="<?php echo $linkTarget; ?>">
+									<img class="fad-image img-fluid rounded" 
+										src="<?php echo ADSMANAGER_NOPIC_IMG; ?>" 
+										alt="nopic" />
+								</a>
+							<?php endif; ?>
+						</td>
+
+						<!-- Pravý stĺpec: nadpis + info -->
+						<td style="width: 65%; vertical-align: top; padding: 15px;">
+							<div style="display:flex; flex-direction:column; justify-content:flex-start; height:100%;">
+
+								<!-- Nadpis -->
+								<h4 class="fw-bold mb-1 text-dark juloawrapper" style="margin-top:0;">
+									<a href="<?php echo $linkTarget; ?>" class="text-dark">
+										<b><?php echo htmlspecialchars($content->ad_headline); ?></b>
+									</a>
+								</h4>
+
+								<div class="mb-1 text-dark">
+									<?php if (!empty($content->ad_price)) echo htmlspecialchars($content->ad_price) . " €<br/>"; ?>
+									<?php if (!empty($content->ad_city)) echo htmlspecialchars($content->ad_city) . "<br/>"; ?>
+									<?php if($content->userid != 0): 
+										$target = TLink::getUserAdsLink($content->userid);
+										echo "od " . ($this->conf->display_fullname == 1 
+											? "<a href='".$target."' class='text-dark'><b>".$content->name."</b></a>" 
+											: "<a href='".$target."' class='text-dark'><b>".$content->user."</b></a>"); 
+									endif; ?>
+									| <?php echo $this->reorderDate($content->date_created); ?>
+									| Zobrazení: <?php echo $content->views; ?>
+								</div>
+							</div>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+				</tbody>
+			</table>
+			<?php else: ?>
+				<div class="alert alert-warning mt-3">
+					<?php 
+					if (!empty($this->text_search)) {
+						echo JText::sprintf('ADSMANAGER_SELECT_CATEGORY_NO_RESULT', htmlspecialchars($this->text_search));
+					} else {
+						echo JText::_('ADSMANAGER_SELECT_CATEGORY_NO_RESULT');
+					}
+					?>
+				</div>
+			<?php endif; ?>
+		</div>
+
+		<style>
+		.adsmanager_table_description {
+			border-top: 1px solid #dee2e6;
+			border-bottom: 1px solid #dee2e6;
+			cursor: pointer;
+		}
+		.adsmanager_table_description:hover {
+			background-color: #faf2cc;
+		}
+		.adsmanager_table_description td img {
+			max-width: 100%;
+			height: auto;
+			display: block;
+			margin-bottom: 10px;
+			border-radius: 5px;
+		}
+		.juloawrapper h4 {
+			font-size: 17.5px;
+			margin-top:0;
+		}
+		</style>
+		<?php
+	}
 	
 	function reorderDate( $date ){
 		$format = JText::_('ADSMANAGER_DATE_FORMAT_LC');

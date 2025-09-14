@@ -109,11 +109,9 @@ defined('_JEXEC') or die( 'Restricted access' );
                     ?>
                 </div>
                 <div class="ad-detail-bottom">
-                    <?php if ($this->conf->display_last == 2)
-                    {
-                        $this->displayContents($this->contents,$this->nbimages); 
-                    } $this->general->endTemplate();
-                    ?>
+                    <?php if ($this->conf->display_last == 2) {
+                        $this->displayLastAdsList($this->contents, 6); // max 5 posledných
+                    } $this->general->endTemplate(); ?>
                 </div>
             </fieldset>
         </div>

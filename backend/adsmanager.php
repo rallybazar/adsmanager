@@ -87,5 +87,5 @@ if(version_compare(JVERSION,'1.6.0','>=')){
 $controller->execute(JRequest::getCmd('task', null));
 $controller->redirect();
 
-echo "<br/><div align='center'><i>Adsmanager 3.3. Beta</i></div>";
+echo "<br/><div align='center'><i>Adsmanager 3.3.1</i></div>";
 echo '<div class="alert">Upgrade to a PRO version, to get full features and support : <a href="http://Juloa.com/compare.html">Juloa.com</a></div>';

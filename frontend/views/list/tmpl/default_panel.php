@@ -51,14 +51,45 @@ defined('_JEXEC') or die('Restricted access');
                                 <div class="mb-1 text-dark column_<?php echo $col->id; ?>">
                                     <?php 
                                     if (isset($this->fColumns[$col->id])) {
+                                        $price = '';
+                                        $priceOther = '';
+                                        $otherLines = [];
+
+                                        // iterujeme cez všetky polia a ukladáme hodnoty
                                         foreach($this->fColumns[$col->id] as $field) {
-                                            $c = $this->field->showFieldValue($content,$field); 
-                                            if ($c) {
-                                                // Pole už nebude bold
-                                                $title = $this->field->showFieldTitle(@$content->catid,$field);
-                                                echo $title ? htmlspecialchars($title) . ": " : "";
-                                                echo "$c<br/>";
+                                            $c = $this->field->showFieldValue($content, $field); 
+
+                                            // iba ak hodnota existuje a nie je prázdna
+                                            if ($c !== null && trim($c) !== '') {
+                                                $fieldName = $field->name;
+
+                                                // spracovanie ceny a alternatívnej ceny
+                                                if ($fieldName == 'ad_price') {
+                                                    $price = $c;
+                                                } elseif ($fieldName == 'ad_priceother') {
+                                                    $priceOther = $c;
+                                                } else {
+                                                    $otherLines[] = $c;
+                                                }
                                             }
+                                        }
+
+                                        // vytvorenie riadku s cenou
+                                        $priceLine = '';
+                                        if ($price !== '' && $priceOther !== '') {
+                                            $priceLine = $price . " | " . $priceOther;
+                                        } elseif ($price !== '') {
+                                            $priceLine = $price;
+                                        } elseif ($priceOther !== '') {
+                                            $priceLine = $priceOther;
+                                        }
+
+                                        // vypíšeme cenu / alternatívnu cenu
+                                        if ($priceLine !== '') echo $priceLine . "<br/>";
+
+                                        // vypíšeme ostatné polia
+                                        foreach($otherLines as $line){
+                                            echo $line . "<br/>";
                                         }
                                     }
                                     ?>
@@ -69,16 +100,18 @@ defined('_JEXEC') or die('Restricted access');
                             <div class="mt-2 text-dark">
                                 <?php 
                                 if($content->userid != 0){
-                                    echo JText::_('ADSMANAGER_FROM')." ";
                                     $target = TLink::getUserAdsLink($content->userid);
-                                    echo $this->conf->display_fullname == 1 
-                                        ? "<a href='".$target."' class='text-dark'>".$content->fullname."</a>" 
-                                        : "<a href='".$target."' class='text-dark'>".$content->user."</a>";
+                                    $authorName = $this->conf->display_fullname == 1 
+                                        ? $content->fullname 
+                                        : $content->user;
+
+                                    // Iba meno autora tučné
+                                    echo JText::_('ADSMANAGER_FROM') . " <a href='".$target."' class='text-dark'><b>".$authorName."</b></a>";
                                     echo " | ";
                                 }
                                 ?>
-                                <?php echo $this->reorderDate($content->date_created); ?>
-                                | <?php echo sprintf(JText::_('ADSMANAGER_VIEWS'),$content->views); ?>
+                                <span><?php echo $this->reorderDate($content->date_created); ?></span>
+                                | <span><?php echo sprintf(JText::_('ADSMANAGER_VIEWS'),$content->views); ?></span>
 
                                 <?php if ($this->conf->show_new && $this->isNewcontent($content->date_created,$this->conf->nbdays_new)): ?>
                                     | <span class="badge bg-success">NEW</span>
@@ -93,7 +126,7 @@ defined('_JEXEC') or die('Restricted access');
                                         <?php echo in_array($content->id,$this->favorites) 
                                             ? JText::_('ADSMANAGER_REMOVE_FAVORITE') 
                                             : JText::_('ADSMANAGER_ADD_FAVORITE'); ?>
-                                      </span>
+                                    </span>
                                 <?php endif; ?>
                             </div>
                         </div>
