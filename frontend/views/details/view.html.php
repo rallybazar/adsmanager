@@ -167,7 +167,7 @@ class AdsmanagerViewDetails extends TView
 		// Last Ads: načítame posledné inzeráty z aktuálnej kategórie
 		$filters['category'] = $catid;
 		$filters['exclude_id'] = $contentid;  // vylúči aktuálny inzerát
-		$filters['published'] = 1;             // iba publikované inzeráty
+		$filters['publish'] = 1;             // iba publikované inzeráty
 		$limitstart = 0;
 		$limit = 6;
 
