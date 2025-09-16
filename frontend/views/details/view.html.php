@@ -170,7 +170,9 @@ class AdsmanagerViewDetails extends TView
 		$limitstart = 0;
 		$limit = 6;
 
-		$lastContents = $contentmodel->getContents($filters, $limitstart, $limit, 'date_created', 'DESC');
+		// $lastContents = $contentmodel->getContents($filters, $limitstart, $limit, 'date_created', 'DESC');
+		// Náhodné poradie, aby sa zobrazenie menilo pri každom načítaní
+		$lastContents = $contentmodel->getContents($filters, $limitstart, $limit, 'RAND()', '');
 		$this->assignRef('contents', $lastContents);
 
 
