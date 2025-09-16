@@ -166,12 +166,13 @@ class AdsmanagerViewDetails extends TView
 
 		// Last Ads: načítame posledné inzeráty z aktuálnej kategórie
 		$filters['category'] = $catid;
+		$filters['exclude_id'] = $contentid;  // vylúči aktuálny inzerát
 		$limitstart = 0;
 		$limit = 6;
 
 		$lastContents = $contentmodel->getContents($filters, $limitstart, $limit, 'date_created', 'DESC');
-
 		$this->assignRef('contents', $lastContents);
+
 
         if($conf->image_display == 'jssor') {
             $tpl = 'jssor';
