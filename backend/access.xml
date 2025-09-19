@@ -75,5 +75,8 @@
 
 		<!-- Import -->
 		<action name="adsmanager.accessimport" title="Access import" description="" />
+
+		<!-- Premium Ads -->
+		<action name="adsmanager.accesspremiumads" title="Access premium ads" description="" />
 	</section>
 </access>

@@ -368,8 +368,8 @@ class AdsmanagerViewAdmin extends TView
 		JArrayHelper::toInteger($catid, array(0));
 		$id	= JRequest::getVar( 'id', $catid[0], '', 'int' );
 
-		$model = $this->getModel("Category");
-		$confmodel	  = $this->getModel("Configuration");
+		$model = $this->getModel("category");
+		$confmodel	  = $this->getModel("configuration");
 
 		$config = $confmodel->getConfiguration();
 		$this->assignRef('config',$config);
@@ -404,8 +404,8 @@ class AdsmanagerViewAdmin extends TView
 		JArrayHelper::toInteger($mailid, array(0));
 		$id	= JRequest::getVar( 'id', $mailid[0], '', 'int' );
 
-		$model = $this->getModel("Mail");
-		$confmodel	  = $this->getModel("Configuration");
+		$model = $this->getModel("mail");
+		$confmodel	  = $this->getModel("configuration");
 
 		$config = $confmodel->getConfiguration();
 		$this->assignRef('config',$config);
@@ -1266,7 +1266,6 @@ class AdsmanagerViewAdmin extends TView
 		// $limitstart = $app->getUserStateFromRequest("com_adsmanager.importad.limitstart", 'limitstart', 0,'int');
 		// $this->pagination = new JPagination($total, $limitstart, $limit);
 	}
-
 	
     function _export(){
 		$app = JFactory::getApplication();
@@ -1291,6 +1290,67 @@ class AdsmanagerViewAdmin extends TView
 		$nbcats = $catmodel->getNbCats(false);
 		$this->assignRef('cats',$cats);
 		$this->assignRef('nbcats',$nbcats);
+	}
+
+	function _listpremiumads()
+	{
+		$app = JFactory::getApplication();
+
+		// Check if the user can access premium ads
+		$user = JFactory::getUser();
+		if (!$user->authorise('adsmanager.accesspremiumads', 'com_adsmanager')) {
+			$app->redirect('index.php', JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+		}
+
+		// Načítanie potrebných modelov
+		$confmodel      = $this->getModel("configuration");
+		$catmodel       = $this->getModel("category");
+		$premiummodel   = $this->getModel("premiumad");
+
+		// Paging a ordering
+		$limit           = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'int');
+		$limitstart      = $app->getUserStateFromRequest("com_adsmanager.admin_premiumads.limitstart", 'limitstart', 0, 'int');
+		$filter_order    = $app->getUserStateFromRequest('com_adsmanager.premiumads.filter_order', 'filter_order', 'a.id', 'cmd');
+		$filter_order_Dir= $app->getUserStateFromRequest('com_adsmanager.premiumads.filter_order_Dir', 'filter_order_Dir', 'DESC', 'word');
+		$filterpublish   = $app->getUserStateFromRequest('com_adsmanager.premiumads.publish', 'filterpublish', '');
+		$search          = $app->getUserStateFromRequest('com_adsmanager.premiumads.search', 'search', '', 'word');
+		$catid           = $app->input->getInt('catid', 0);
+
+		$this->setContentsToolbar(JText::_("COM_ADSMANAGER") . " - " . JText::_("ADSMANAGER_PREMIUM_ADS"));
+
+		$conf = $confmodel->getConfiguration();
+
+		$lists['order_Dir'] = $filter_order_Dir;
+		$lists['order']     = $filter_order;
+		$this->lists = $lists;
+
+		// Filtre
+		$filters = array();
+		if ($filterpublish != "") {
+			$filters['publish'] = $filterpublish;
+		}
+		if ($search != "") {
+			$filters['username'] = $search;
+		}
+		if ($catid != 0) {
+			$filters['category'] = $catid;
+		}
+		$this->cat           = $catid;
+		$this->search        = $search;
+		$this->filterpublish = $filterpublish;
+
+		$this->cats = $catmodel->getCatTree(false);
+
+		// Načítanie záznamov
+		$total = $premiummodel->getNbPremiumAds($filters, 1); // 1=admin
+		$this->premiumAds = $premiummodel->getPremiumAds($filters, $limitstart, $limit, $filter_order, $filter_order_Dir, 1);
+
+		// Pagination
+		jimport('joomla.html.pagination');
+		$this->pagination = new JPagination($total, $limitstart, $limit);
+
+		// Explicitne nastavenie layoutu, aby Joomla hľadala správny tmpl súbor
+		$this->setLayout('listpremiumads');
 	}
     
 	function selectCategories($id, $level, $children,$catid,$nodisplaycatid,$multiple=0,$catsid="") {
@@ -1390,7 +1450,7 @@ class AdsmanagerViewAdmin extends TView
 		$id	= JFactory::getApplication()->input->get( 'id', $templateId[0], '', 'int' );
 
 		$model = $this->getModel();
-		$confmodel	  = $this->getModel("Configuration");
+		$confmodel	  = $this->getModel("configuration");
 
 		$config = $confmodel->getConfiguration();
 		$this->config = $config;

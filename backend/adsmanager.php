@@ -81,6 +81,9 @@ if(version_compare(JVERSION,'1.6.0','>=')){
 	if($user->authorise('adsmanager.accessimport','com_adsmanager')) {
 		JSubMenuHelper::addEntry(JText::_('COM_ADSMANAGER_IMPORTADS'), 'index.php?option=com_adsmanager&amp;c=importad');
 	}
+	if($user->authorise('adsmanager.accesspremiumads','com_adsmanager')) {
+		JSubMenuHelper::addEntry(JText::_('COM_ADSMANAGER_PREMIUM_ADS'), 'index.php?option=com_adsmanager&amp;c=premiumads');
+	}
 }	
 
 // Perform the Request task

@@ -823,6 +823,25 @@ class Com_AdsmanagerInstallerScript
 	  PRIMARY KEY (`id`)
 	) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
 
+	$queries[] = "CREATE TABLE IF NOT EXISTS `#__adsmanager_premium_ads` (
+	  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	  `adid` int(10) unsigned DEFAULT NULL,
+	  `userid` int(10) unsigned DEFAULT NULL,
+	  `headline` text NOT NULL,
+	  `description` text,
+	  `image` text,
+	  `url` text NOT NULL,
+	  `custom_html` mediumtext,
+	  `priority` int(11) DEFAULT 0,
+	  `active_from` datetime DEFAULT NULL,
+	  `active_to` datetime DEFAULT NULL,
+	  `published` tinyint(1) DEFAULT 1,
+	  `views` int(10) unsigned DEFAULT 0,
+	  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
+	  `date_modified` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+	  PRIMARY KEY (`id`)
+	) ENGINE=MyISAM DEFAULT CHARACTER SET utf8;";
+
 	foreach($queries as $query) {
 		$db->setQuery($query);
 		try {

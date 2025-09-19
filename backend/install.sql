@@ -23,6 +23,25 @@ CREATE TABLE IF NOT EXISTS `#__adsmanager_ads` (
   `published` tinyint(1) default '1',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARACTER SET utf8;
+
+CREATE TABLE IF NOT EXISTS `#__adsmanager_premium_ads` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `adid` int(10) unsigned DEFAULT NULL,      -- ak Premium vychádza z reálneho inzerátu
+  `userid` int(10) unsigned DEFAULT NULL,    -- majiteľ (voliteľné, môže byť NULL)
+  `headline` text NOT NULL,                  -- nadpis inzerátu / reklamy
+  `description` text,                        -- krátky text (voliteľné)
+  `image` text,                              -- cesta k obrázku (môže byť aj GIF)
+  `url` text NOT NULL,                       -- cieľový odkaz (interný detail inzerátu alebo externý link)
+  `custom_html` mediumtext,                  -- voliteľné: úplný vlastný HTML blok (bannery, embed)
+  `priority` int(11) DEFAULT 0,              -- na zoradenie (vyššie číslo = vyššia priorita)
+  `active_from` datetime DEFAULT NULL,       -- od kedy sa má zobrazovať
+  `active_to` datetime DEFAULT NULL,         -- do kedy sa má zobrazovať
+  `published` tinyint(1) DEFAULT 1,          -- či sa má zobrazovať
+  `views` int(10) unsigned DEFAULT 0,        -- koľkokrát sa zobrazil
+  `date_created` datetime DEFAULT CURRENT_TIMESTAMP,
+  `date_modified` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARACTER SET utf8;
          
 CREATE TABLE IF NOT EXISTS `#__adsmanager_categories` (
   `id` int(10) unsigned NOT NULL auto_increment,
