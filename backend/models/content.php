@@ -389,18 +389,18 @@ class AdsmanagerModelContent extends TModel
     	return $search;
     }
     
-	function getContents($filters = null,$limitstart=null,$limit=null,$filter_order=null,$filter_order_Dir=null,$admin=0,$favorite=0,$lat=0,$lon=0,$mapFieldName='')
-    {
+	function getContents($filters = null, $limitstart=null, $limit=null, $filter_order=null, $filter_order_Dir=null, $admin=0, $favorite=0, $lat=0, $lon=0, $mapFieldName='')
+	{
 		$selectByDistance = '';
 		$filterByDistance = '';
 		$enableLocationOrdering = false;
-		
+
 		if($filter_order == "distance " && $lat != 0 && $lon != 0) {
 			$enableLocationOrdering = true;
 		} else if ($filter_order == "distance ") {
 			$filter_order = null;
 		}
-		
+
 		if($enableLocationOrdering) {
 			$selectByDistance = "( 3959 * acos( cos( radians('$lat') ) * 
 								cos( radians( a.".$mapFieldName."_lat ) ) * 
@@ -411,93 +411,90 @@ class AdsmanagerModelContent extends TModel
 								AS distance, ";
 								
 			$filterByDistance = " a.".$mapFieldName."_lat IS NOT NULL
-								  AND a.".$mapFieldName."_lng IS NOT NULL ";
+								AND a.".$mapFieldName."_lng IS NOT NULL ";
 		}
-    	$sql = "SELECT $selectByDistance a.*, p.name as parent, p.id as parentid, c.name as cat, c.id as catid,u.username as user,u.name as fullname ".
+
+		$sql = "SELECT $selectByDistance a.*, p.name as parent, p.id as parentid, c.name as cat, c.id as catid,u.username as user,u.name as fullname ".
 			" FROM #__adsmanager_ads as a ".
 			" INNER JOIN #__adsmanager_adcat as adcat ON adcat.adid = a.id ";
 		if (COMMUNITY_BUILDER == 1)
-    		$sql .=	" LEFT JOIN #__comprofiler as cb ON cb.user_id = a.userid ";
-		$sql .=	" LEFT JOIN #__users as u ON a.userid = u.id ".
+			$sql .= " LEFT JOIN #__comprofiler as cb ON cb.user_id = a.userid ";
+		$sql .= " LEFT JOIN #__users as u ON a.userid = u.id ".
 			" INNER JOIN #__adsmanager_categories as c ON adcat.catid = c.id ".
 			" LEFT JOIN #__adsmanager_categories as p ON c.parent = p.id ";
-        
-        if($favorite != 0) {
-            $sql .= " INNER JOIN #__adsmanager_favorite as adfav ON a.id = adfav.adid";
-        }
-        
-  		$filter = $this->_getSQLFilter($filters);
-        $sql .= $filter;
-           
-        if($favorite != 0) {
-            if($filter != null)
-                $prefix = " AND ";
-            else
-                $prefix = " WHERE ";
-            $sql .= $prefix."adfav.userid = ".(int)$favorite." ";
-        }
 		
-		if($filterByDistance != '') {
-            if($filter != null)
-                $prefix = " AND ";
-            else
-                $prefix = " WHERE ";
-            $sql .= $prefix.$filterByDistance;
-        }
-        
-        if($admin != 1) {
-		
-            if(version_compare(JVERSION, '1.6', 'ge')) {
-                
-                $listCategories = TPermissions::getAuthorisedCategories('read');
+		if($favorite != 0) {
+			$sql .= " INNER JOIN #__adsmanager_favorite as adfav ON a.id = adfav.adid";
+		}
 
-                //If the variable is an array and if it's not empty, we add a filter to the request
-                //If not we're not return any category
-                if(is_array($listCategories) && !empty($listCategories)){
-                    $categories = implode(',',$listCategories);
-                    $listCategories = " AND c.id IN (".$categories.") "; 
-                }else{
-                    $listCategories = " AND 0 ";
-                }
-                
-            } else {
-                $listCategories = "";
-            }
-				
+		// --- FILTER ---
+		$filter = $this->_getSQLFilter($filters);
+		$sql .= $filter;
+
+		// Exclude current ad if set
+		if(isset($filters['exclude_id']) && !empty($filters['exclude_id'])) {
+			if($filter != null) $sql .= " AND ";
+			else $sql .= " WHERE ";
+			$sql .= "a.id <> ".(int)$filters['exclude_id'];
+		}
+
+		if($favorite != 0) {
+			if($filter != null || isset($filters['exclude_id'])) $prefix = " AND ";
+			else $prefix = " WHERE ";
+			$sql .= $prefix."adfav.userid = ".(int)$favorite." ";
+		}
+
+		if($filterByDistance != '') {
+			if($filter != null || isset($filters['exclude_id'])) $prefix = " AND ";
+			else $prefix = " WHERE ";
+			$sql .= $prefix.$filterByDistance;
+		}
+
+		if($admin != 1) {
+			if(version_compare(JVERSION, '1.6', 'ge')) {
+				$listCategories = TPermissions::getAuthorisedCategories('read');
+				if(is_array($listCategories) && !empty($listCategories)){
+					$categories = implode(',',$listCategories);
+					$listCategories = " AND c.id IN (".$categories.") "; 
+				} else {
+					$listCategories = " AND 0 ";
+				}
+			} else {
+				$listCategories = "";
+			}
 			$sql .= $listCategories;
-		
 		}
-        
-    	if ($filter_order === null) {
-    		$sql .= " GROUP BY a.id";
-    	} else {
-    		$sql .= " GROUP BY a.id ORDER BY $filter_order $filter_order_Dir ";
+
+		if ($filter_order === null) {
+			$sql .= " GROUP BY a.id";
+		} else {
+			$sql .= " GROUP BY a.id ORDER BY $filter_order $filter_order_Dir ";
 		}
-		
-    	if (($admin == 0)&&(function_exists("updateQueryWithReorder")))
-    		updateQueryWithReorder($sql);
-    	else if (($admin == 1)&&(function_exists("updateQuery")))
-    		updateQuery($sql);
-        
-    	if ($limitstart === null) {
-    		$this->_db->setQuery($sql);
-    	} else {
-    		$this->_db->setQuery($sql,$limitstart,$limit);
-    	}
-    	//echo $sql;
-    	$products = $this->_db->loadObjectList();
-    	
-    	foreach($products as &$product) {
-    		$product->cat = JText::_($product->cat);
-    		if ($product->parent != "")
-    			$product->parent = JText::_($product->parent);
-    		$product->images = @json_decode($product->images);
-    		if (!is_array($product->images))
-    			$product->images = array();
-    	}
-    	
-		return $products;	
-    }
+
+		if (($admin == 0)&&(function_exists("updateQueryWithReorder")))
+			updateQueryWithReorder($sql);
+		else if (($admin == 1)&&(function_exists("updateQuery")))
+			updateQuery($sql);
+
+		if ($limitstart === null) {
+			$this->_db->setQuery($sql);
+		} else {
+			$this->_db->setQuery($sql,$limitstart,$limit);
+		}
+
+		$products = $this->_db->loadObjectList();
+
+		foreach($products as &$product) {
+			$product->cat = JText::_($product->cat);
+			if ($product->parent != "")
+				$product->parent = JText::_($product->parent);
+			$product->images = @json_decode($product->images);
+			if (!is_array($product->images))
+				$product->images = array();
+		}
+
+		return $products;
+	}
     
 	 function getFavorites($userId) {
         $sql = "SELECT adid
