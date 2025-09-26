@@ -51,9 +51,15 @@ class AdsmanagerControllerPremiumads extends TController
     {
         $this->init();
         $id = JFactory::getApplication()->input->getInt('id', 0);
-        $this->_view->editPremiumAd($id);
+
+        // Povedz view, že má použiť layout "editpremiumad"
+        $this->_view->setLayout('editpremiumad');
+        $this->_view->assign('adId', $id);
+
+        // Zobrazí layout
         $this->_view->display();
     }
+
 
     function save()
     {

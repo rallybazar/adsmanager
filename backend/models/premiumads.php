@@ -24,7 +24,12 @@ class AdsmanagerModelPremiumads extends TModel
             ->select('COUNT(*)')
             ->from($db->quoteName('#__adsmanager_premium_ads'));
 
-        // Filter podľa publikácie
+        
+        if (!empty($filters['id'])) {
+            $query->where($db->quoteName('id') . ' = ' . (int)$filters['id']);
+        }
+
+// Filter podľa publikácie
         if (!empty($filters['publish'])) {
             $query->where($db->quoteName('published') . ' = ' . (int)$filters['publish']);
         }
@@ -60,8 +65,12 @@ class AdsmanagerModelPremiumads extends TModel
 
         $query->select('*')
               ->from($db->quoteName('#__adsmanager_premium_ads'));
-
-        // Filtre
+        
+        if (!empty($filters['id'])) {
+            $query->where($db->quoteName('id') . ' = ' . (int)$filters['id']);
+        }
+        
+      // Filtre
         if (!empty($filters['publish'])) {
             $query->where($db->quoteName('published') . ' = ' . (int)$filters['publish']);
         }

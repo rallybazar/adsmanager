@@ -1356,14 +1356,15 @@ class AdsmanagerViewAdmin extends TView
 		$this->search = $search;
 	}
 
-	function editPremiumAd($id)
+	public function _editpremiumad()
 	{
-		$model = $this->getModel('Premiumads');
-		$ad = $model->getPremiumAds(array('id' => $id), 0, 1); // načíta len jeden
-		$this->ad = isset($ad[0]) ? $ad[0] : null;
+		$id = JFactory::getApplication()->input->getInt('id', 0);
 
-		$this->setLayout('editpremiumads');
-	}	
+		$model = $this->getModel('premiumads');
+		$ads = $model->getPremiumAds(['id' => $id], 0, 1);
+
+		$this->ad = !empty($ads) ? $ads[0] : null;
+	}
     
 	function selectCategories($id, $level, $children,$catid,$nodisplaycatid,$multiple=0,$catsid="") {
 		if (@$children[$id]) {
