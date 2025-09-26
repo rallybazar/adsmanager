@@ -1,41 +1,123 @@
 <?php
+/**
+ * @package     AdsManager
+ * @copyright   Copyright (C) 2010-2025 Juloa.com. All rights reserved.
+ * @license     GNU/GPL
+ */
+
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.application.component.modeladmin');
+jimport('joomla.application.component.model');
 
 class AdsmanagerModelPremiumads extends TModel
 {
-    public function getItem($pk = null)
+    /**
+     * Vracia počet premium ads podľa filtrov
+     * @param array $filters
+     * @param int $adminFlag
+     * @return int
+     */
+    public function getNbPremiumAds($filters = array(), $adminFlag = 0)
     {
-        // Ak nie je zadané ID, načítaj z inputu
-        if ($pk === null) {
-            $pk = JFactory::getApplication()->input->getInt('id');
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true)
+            ->select('COUNT(*)')
+            ->from($db->quoteName('#__adsmanager_premium_ads'));
+
+        // Filter podľa publikácie
+        if (!empty($filters['publish'])) {
+            $query->where($db->quoteName('published') . ' = ' . (int)$filters['publish']);
         }
 
-        // Získaj JTable objekt
-        $table = $this->getTable();
-
-        if ($table->load($pk)) {
-            return $table; // úspešne načítané, vrátime objekt tabuľky
+        // Filter podľa user ID
+        if (!empty($filters['userid'])) {
+            $query->where($db->quoteName('userid') . ' = ' . (int)$filters['userid']);
         }
 
-        return false; // záznam sa nenašiel
+        // Filter podľa headline (textový filter)
+        if (!empty($filters['headline'])) {
+            $query->where($db->quoteName('headline') . ' LIKE ' . $db->quote('%' . $filters['headline'] . '%'));
+        }
+
+        $db->setQuery($query);
+        return (int) $db->loadResult();
     }
 
-    public function getTable($type = 'Premiumad', $prefix = 'AdsmanagerTable', $config = array())
+    /**
+     * Vracia samotné premium ads podľa filtrov a stránkovania
+     * @param array $filters
+     * @param int $limitstart
+     * @param int $limit
+     * @param string $order
+     * @param string $orderDir
+     * @param int $adminFlag
+     * @return array
+     */
+    public function getPremiumAds($filters = array(), $limitstart = 0, $limit = 20, $order = 'id', $orderDir = 'DESC', $adminFlag = 1)
     {
-        return JTable::getInstance($type, $prefix, $config);
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $query->select('*')
+              ->from($db->quoteName('#__adsmanager_premium_ads'));
+
+        // Filtre
+        if (!empty($filters['publish'])) {
+            $query->where($db->quoteName('published') . ' = ' . (int)$filters['publish']);
+        }
+
+        if (!empty($filters['userid'])) {
+            $query->where($db->quoteName('userid') . ' = ' . (int)$filters['userid']);
+        }
+
+        if (!empty($filters['headline'])) {
+            $query->where($db->quoteName('headline') . ' LIKE ' . $db->quote('%' . $filters['headline'] . '%'));
+        }
+
+        // ORDER BY - použitie skutočných názvov stĺpcov tabuľky
+        $query->order($db->escape($order) . ' ' . $db->escape($orderDir));
+
+        // Nastavenie query a limit
+        $db->setQuery($query, (int)$limitstart, (int)$limit);
+
+        return $db->loadObjectList();
     }
 
-    public function getForm($data = array(), $loadData = true)
+    public function saveData($data)
     {
-        // Form v tomto štýle zatiaľ nepoužijeme, budeme renderovať PHP view
-        return false;
+        $db = JFactory::getDbo();
+        $id = isset($data['id']) ? (int)$data['id'] : 0;
+
+        $fields = array(
+            $db->quoteName('headline') => $db->quote($data['headline']),
+            $db->quoteName('description') => $db->quote($data['description']),
+            $db->quoteName('url') => $db->quote($data['url']),
+            $db->quoteName('published') => (int)$data['published']
+        );
+
+        if ($id) {
+            // UPDATE
+            $query = $db->getQuery(true)
+                        ->update($db->quoteName('#__adsmanager_premium_ads'))
+                        ->set($fields)
+                        ->where($db->quoteName('id') . ' = ' . $id);
+        } else {
+            // INSERT
+            $columns = array_keys($fields);
+            $values = array_values($fields);
+            $query = $db->getQuery(true)
+                        ->insert($db->quoteName('#__adsmanager_premium_ads'))
+                        ->columns($db->quoteName($columns))
+                        ->values(implode(',', $values));
+        }
+
+        $db->setQuery($query);
+
+        try {
+            return $db->execute();
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
-    protected function loadFormData()
-    {
-        // Tu by sme načítali údaje do edit view
-        return $this->getItem();
-    }
 }

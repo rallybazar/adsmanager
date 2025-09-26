@@ -506,7 +506,6 @@ class AdsmanagerViewAdmin extends TView
 		
 		$cats = $catmodel->getCatTree(false);
 		$this->assignRef('cats',$cats);
-			
 		
 		$total = $contentmodel->getNbContents($filters,1);
 		$contents = $contentmodel->getContents($filters,$limitstart, $limit,$filter_order,$filter_order_Dir,1);//1=admin
@@ -1292,34 +1291,38 @@ class AdsmanagerViewAdmin extends TView
 		$this->assignRef('nbcats',$nbcats);
 	}
 
-	function _listpremiumads()
+	function _premiumads()
 	{
 		$app = JFactory::getApplication();
 
-		// Check if the user can access premium ads
+		// Overenie oprávnenia
 		$user = JFactory::getUser();
 		if (!$user->authorise('adsmanager.accesspremiumads', 'com_adsmanager')) {
 			$app->redirect('index.php', JText::_('JERROR_ALERTNOAUTHOR'), 'error');
+			return;
 		}
 
-		// Načítanie potrebných modelov
-		$confmodel      = $this->getModel("configuration");
-		$catmodel       = $this->getModel("category");
-		$premiummodel   = $this->getModel("premiumad");
+		// Načítanie modelov
+		$confmodel    = $this->getModel("Configuration");
+		$premiummodel = $this->getModel("Premiumads");
 
 		// Paging a ordering
 		$limit           = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'int');
 		$limitstart      = $app->getUserStateFromRequest("com_adsmanager.admin_premiumads.limitstart", 'limitstart', 0, 'int');
-		$filter_order    = $app->getUserStateFromRequest('com_adsmanager.premiumads.filter_order', 'filter_order', 'a.id', 'cmd');
-		$filter_order_Dir= $app->getUserStateFromRequest('com_adsmanager.premiumads.filter_order_Dir', 'filter_order_Dir', 'DESC', 'word');
+		$filter_order = $app->getUserStateFromRequest('com_adsmanager.premiumads.filter_order', 'filter_order', 'id', 'cmd');
+		$filter_order_Dir = $app->getUserStateFromRequest('com_adsmanager.premiumads.filter_order_Dir', 'filter_order_Dir', 'DESC', 'word');
 		$filterpublish   = $app->getUserStateFromRequest('com_adsmanager.premiumads.publish', 'filterpublish', '');
 		$search          = $app->getUserStateFromRequest('com_adsmanager.premiumads.search', 'search', '', 'word');
-		$catid           = $app->input->getInt('catid', 0);
 
-		$this->setContentsToolbar(JText::_("COM_ADSMANAGER") . " - " . JText::_("ADSMANAGER_PREMIUM_ADS"));
+		// Toolbar
+		if (!isset($this->toolbarSet)) {
+			$this->setContentsToolbar(JText::_("COM_ADSMANAGER") . " - " . JText::_("COM_ADSMANAGER_PREMIUM_ADS"));
+			$this->toolbarSet = true;
+		}
 
 		$conf = $confmodel->getConfiguration();
 
+		// Nastavenie ordering
 		$lists['order_Dir'] = $filter_order_Dir;
 		$lists['order']     = $filter_order;
 		$this->lists = $lists;
@@ -1332,26 +1335,35 @@ class AdsmanagerViewAdmin extends TView
 		if ($search != "") {
 			$filters['username'] = $search;
 		}
-		if ($catid != 0) {
-			$filters['category'] = $catid;
-		}
-		$this->cat           = $catid;
-		$this->search        = $search;
-		$this->filterpublish = $filterpublish;
 
-		$this->cats = $catmodel->getCatTree(false);
+		// PREMIUM ADS nemajú kategórie – nastavíme prázdne pole
+		$cats = array();
+		$this->cats = $cats;
 
 		// Načítanie záznamov
-		$total = $premiummodel->getNbPremiumAds($filters, 1); // 1=admin
-		$this->premiumAds = $premiummodel->getPremiumAds($filters, $limitstart, $limit, $filter_order, $filter_order_Dir, 1);
+		$total = $premiummodel->getNbPremiumAds($filters, 1); // 1 = admin
+		$premiumAds = $premiummodel->getPremiumAds($filters, $limitstart, $limit, $filter_order, $filter_order_Dir, 1);
 
 		// Pagination
 		jimport('joomla.html.pagination');
-		$this->pagination = new JPagination($total, $limitstart, $limit);
+		$pagination = new JPagination($total, $limitstart, $limit);
 
-		// Explicitne nastavenie layoutu, aby Joomla hľadala správny tmpl súbor
-		$this->setLayout('listpremiumads');
+		// Priradenie do view
+		$this->premiumAds = $premiumAds;
+		$this->conf = $conf;
+		$this->pagination = $pagination;
+		$this->filterpublish = $filterpublish;
+		$this->search = $search;
 	}
+
+	function editPremiumAd($id)
+	{
+		$model = $this->getModel('Premiumads');
+		$ad = $model->getPremiumAds(array('id' => $id), 0, 1); // načíta len jeden
+		$this->ad = isset($ad[0]) ? $ad[0] : null;
+
+		$this->setLayout('editpremiumads');
+	}	
     
 	function selectCategories($id, $level, $children,$catid,$nodisplaycatid,$multiple=0,$catsid="") {
 		if (@$children[$id]) {
