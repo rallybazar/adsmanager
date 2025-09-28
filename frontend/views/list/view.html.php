@@ -339,6 +339,17 @@ class AdsmanagerViewList extends TView
 			$this->banners = false;
 		}
 
+		// načítanie prémiových inzerátov
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->select('*')
+			->from($db->quoteName('#__adsmanager_premium_ads'))
+			->where($db->quoteName('published') . ' = 1')
+			->order($db->quoteName('priority') . ' DESC')
+			->order($db->quoteName('date_created') . ' DESC');
+		$db->setQuery($query);
+		$this->premiumAds = $db->loadObjectList();
+
 		parent::display($tpl);
 	}
 	

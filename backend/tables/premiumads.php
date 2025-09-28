@@ -1,16 +1,9 @@
 <?php
-/**
- * @package		AdsManager
- * @subpackage	Tables
- * @copyright	Copyright (C) 2010-2014 Juloa.com
- * @license		GNU/GPL
- */
-
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.database.table');
 
-class AdsmanagerTablePremiumad extends JTable
+class AdsmanagerTablePremiumads extends JTable
 {
     public function __construct(&$db)
     {
@@ -18,24 +11,57 @@ class AdsmanagerTablePremiumad extends JTable
     }
 
     /**
-     * Overwrite the check method to add custom validation.
+     * Rozšírené bindovanie dát z formulára
+     *
+     * @param array $data
+     * @param array $files
+     * @return bool
      */
-    public function check()
+    public function bindContent($data, $files = array())
     {
-        if (empty($this->headline)) {
-            $this->setError(JText::_('COM_ADSMANAGER_ERROR_HEADLINE_REQUIRED'));
+        // Bind základné polia
+        if (!$this->bind($data)) {
             return false;
         }
 
-        if (empty($this->url) && empty($this->custom_html)) {
-            $this->setError(JText::_('COM_ADSMANAGER_ERROR_URL_OR_HTML_REQUIRED'));
+        // Obrázky
+        if (!empty($files['image']['tmp_name'])) {
+            jimport('joomla.filesystem.file');
+            $uploadDir = JPATH_ROOT . '/images/premiumads/';
+            if (!JFolder::exists($uploadDir)) {
+                JFolder::create($uploadDir);
+            }
+            $filename = JFile::makeSafe($files['image']['name']);
+            $dest = $uploadDir . $filename;
+            if (JFile::upload($files['image']['tmp_name'], $dest)) {
+                $this->image = 'images/premiumads/' . $filename;
+            }
+        }
+
+        // Nastav date_modified
+        $this->date_modified = JFactory::getDate()->toSql();
+
+        return true;
+    }
+
+    /**
+     * Uloženie záznamu do DB
+     *
+     * @return bool
+     */
+    public function saveContent()
+    {
+        // Volanie pred uložením cez event pluginov, ak budeš mať
+        JPluginHelper::importPlugin('adsmanager');
+        $dispatcher = JEventDispatcher::getInstance();
+        $dispatcher->trigger('onBeforePremiumAdSave', array(&$this));
+
+        if (!$this->store()) {
             return false;
         }
 
-        // priority default
-        if (!isset($this->priority)) {
-            $this->priority = 0;
-        }
+        // Volanie po uložením cez pluginy
+        $dispatcher->trigger('onAfterPremiumAdSave', array(&$this));
 
         return true;
     }

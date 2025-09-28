@@ -98,9 +98,15 @@ class AdsmanagerModelPremiumads extends TModel
         $id = isset($data['id']) ? (int)$data['id'] : 0;
 
         $fields = array(
+            $db->quoteName('userid') => (int)$data['userid'],
             $db->quoteName('headline') => $db->quote($data['headline']),
             $db->quoteName('description') => $db->quote($data['description']),
+            $db->quoteName('image') => $db->quote($data['image']),
             $db->quoteName('url') => $db->quote($data['url']),
+            $db->quoteName('custom_html') => $db->quote($data['custom_html']),
+            $db->quoteName('priority') => (int)$data['priority'],
+            $db->quoteName('active_from') => $db->quote($data['active_from']),
+            $db->quoteName('active_to') => $db->quote($data['active_to']),
             $db->quoteName('published') => (int)$data['published']
         );
 
@@ -128,5 +134,28 @@ class AdsmanagerModelPremiumads extends TModel
             return false;
         }
     }
+
+    /**
+     * Vracia jeden premium ad podľa ID
+     * @param int $id
+     * @return object|null
+     */
+    public function getItem($id = 0)
+    {
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true)
+            ->select('*')
+            ->from($db->quoteName('#__adsmanager_premium_ads'));
+
+        if ($id) {
+            $query->where($db->quoteName('id') . ' = ' . (int)$id);
+        } else {
+            return null;
+        }
+
+        $db->setQuery($query);
+        return $db->loadObject();
+    }
+
 
 }

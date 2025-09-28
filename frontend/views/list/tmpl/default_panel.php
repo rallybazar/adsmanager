@@ -6,8 +6,61 @@
  */
 defined('_JEXEC') or die('Restricted access');
 ?>
-
 <div class="container-fluid">
+    <?php if (!empty($this->premiumAds)): ?>
+        <table class="table w-100">
+            <tbody>
+            <?php foreach($this->premiumAds as $ad): 
+                $linkTarget = !empty($ad->url) 
+                    ? $ad->url 
+                    : TRoute::_("index.php?option=com_adsmanager&view=details&id=".$ad->id."&catid=".$ad->catid);
+            ?>
+                <tr class="adsmanager_table_description premium-ad" 
+                    onclick="window.location='<?php echo $linkTarget; ?>'">
+
+                    <!-- Ľavý stĺpec: obrázok -->
+                    <td style="width: 35%; vertical-align: top; padding: 15px; text-align:center;">
+                        <?php
+                        // Zistíme, či máme platnú URL obrázku
+                        $imgSrc = !empty($ad->image) ? htmlspecialchars($ad->image) : ADSMANAGER_NOPIC_IMG;
+                        ?>
+                        <a href="<?php echo $linkTarget; ?>">
+                            <img class="fad-image img-fluid rounded border border-warning"
+                                src="<?php echo $imgSrc; ?>"
+                                alt="<?php echo htmlspecialchars($ad->headline ?: 'nopic'); ?>" />
+                        </a>
+                    </td>
+
+                    <!-- Pravý stĺpec -->
+                    <td style="width: 65%; vertical-align: top; padding: 15px;">
+                        <div style="display:flex; flex-direction:column;">
+
+                            <!-- Nadpis s badge -->
+                            <h4 class="fw-bold mb-2 text-dark">
+                                <a href="<?php echo $linkTarget; ?>" class="text-dark">
+                                    <b><?php echo htmlspecialchars($ad->headline); ?></b>
+                                </a>
+                                <span class="badge bg-warning text-dark ms-2">PREMIUM</span>
+                            </h4>
+
+                            <!-- Popis -->
+                            <?php if (!empty($ad->description)): ?>
+                                <div class="mb-2 text-muted"><?php echo nl2br(htmlspecialchars($ad->description)); ?></div>
+                            <?php endif; ?>
+
+                            <!-- Dátum + views -->
+                            <div class="text-dark">
+                                <span><?php echo $this->reorderDate($ad->date_created); ?></span>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
+
+    <!-- Normálne inzeráty -->
     <?php if (!empty($this->contents)): ?>
         <table class="table w-100">
             <tbody>
@@ -135,20 +188,16 @@ defined('_JEXEC') or die('Restricted access');
             <?php endforeach; ?>
             </tbody>
         </table>
-    <?php else: ?>
-        <div class="alert alert-warning mt-3">
-            <?php 
-            if (!empty($this->text_search)) {
-                echo JText::sprintf('ADSMANAGER_SELECT_CATEGORY_NO_RESULT', htmlspecialchars($this->text_search));
-            } else {
-                echo JText::_('ADSMANAGER_SELECT_CATEGORY_NO_RESULT');
-            }
-            ?>
-        </div>
     <?php endif; ?>
 </div>
 
 <style>
+.premium-ad {
+    background-color: #fff8e1;
+}
+.premium-ad:hover {
+    background-color: #ffecb3;
+}
 .adsmanager_table_description {
     border-top: 1px solid #dee2e6;
     border-bottom: 1px solid #dee2e6;
