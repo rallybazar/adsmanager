@@ -50,6 +50,14 @@ $ad = isset($this->content) ? $this->content : null;
     </td>
 </tr>
 
+<!-- Price -->
+<tr>
+    <td><?php echo JText::_('COM_ADSMANAGER_PRICE'); ?></td>
+    <td>
+        <input type="text" name="price" value="<?php echo htmlspecialchars(@$ad->price); ?>" size="20" />
+    </td>
+</tr>
+
 <!-- Image URL -->
 <tr>
     <td><?php echo JText::_('COM_ADSMANAGER_IMAGE_URL'); ?></td>

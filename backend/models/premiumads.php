@@ -97,33 +97,60 @@ class AdsmanagerModelPremiumads extends TModel
         $db = JFactory::getDbo();
         $id = isset($data['id']) ? (int)$data['id'] : 0;
 
-        $fields = array(
-            $db->quoteName('userid') => (int)$data['userid'],
-            $db->quoteName('headline') => $db->quote($data['headline']),
-            $db->quoteName('description') => $db->quote($data['description']),
-            $db->quoteName('image') => $db->quote($data['image']),
-            $db->quoteName('url') => $db->quote($data['url']),
-            $db->quoteName('custom_html') => $db->quote($data['custom_html']),
-            $db->quoteName('priority') => (int)$data['priority'],
-            $db->quoteName('active_from') => $db->quote($data['active_from']),
-            $db->quoteName('active_to') => $db->quote($data['active_to']),
-            $db->quoteName('published') => (int)$data['published']
-        );
-
         if ($id) {
             // UPDATE
+            $fields = array(
+                $db->quoteName('userid') . ' = ' . (int)$data['userid'],
+                $db->quoteName('headline') . ' = ' . $db->quote($data['headline']),
+                $db->quoteName('description') . ' = ' . $db->quote($data['description']),
+                $db->quoteName('price') . ' = ' . $db->quote($data['price']),
+                $db->quoteName('image') . ' = ' . $db->quote($data['image']),
+                $db->quoteName('url') . ' = ' . $db->quote($data['url']),
+                $db->quoteName('custom_html') . ' = ' . $db->quote($data['custom_html']),
+                $db->quoteName('priority') . ' = ' . (int)$data['priority'],
+                $db->quoteName('active_from') . ' = ' . $db->quote($data['active_from']),
+                $db->quoteName('active_to') . ' = ' . $db->quote($data['active_to']),
+                $db->quoteName('published') . ' = ' . (int)$data['published']
+            );
+
             $query = $db->getQuery(true)
-                        ->update($db->quoteName('#__adsmanager_premium_ads'))
-                        ->set($fields)
-                        ->where($db->quoteName('id') . ' = ' . $id);
+                ->update($db->quoteName('#__adsmanager_premium_ads'))
+                ->set($fields)
+                ->where($db->quoteName('id') . ' = ' . $id);
         } else {
             // INSERT
-            $columns = array_keys($fields);
-            $values = array_values($fields);
+            $columns = array(
+                'userid',
+                'headline',
+                'description',
+                'price',
+                'image',
+                'url',
+                'custom_html',
+                'priority',
+                'active_from',
+                'active_to',
+                'published'
+            );
+
+            $values = array(
+                (int)$data['userid'],
+                $db->quote($data['headline']),
+                $db->quote($data['description']),
+                $db->quote($data['price']),
+                $db->quote($data['image']),
+                $db->quote($data['url']),
+                $db->quote($data['custom_html']),
+                (int)$data['priority'],
+                $db->quote($data['active_from']),
+                $db->quote($data['active_to']),
+                (int)$data['published']
+            );
+
             $query = $db->getQuery(true)
-                        ->insert($db->quoteName('#__adsmanager_premium_ads'))
-                        ->columns($db->quoteName($columns))
-                        ->values(implode(',', $values));
+                ->insert($db->quoteName('#__adsmanager_premium_ads'))
+                ->columns($db->quoteName($columns))
+                ->values(implode(',', $values));
         }
 
         $db->setQuery($query);
@@ -131,6 +158,7 @@ class AdsmanagerModelPremiumads extends TModel
         try {
             return $db->execute();
         } catch (Exception $e) {
+            JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
             return false;
         }
     }
@@ -157,5 +185,19 @@ class AdsmanagerModelPremiumads extends TModel
         return $db->loadObject();
     }
 
+    public function deleteItem($id)
+    {
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true)
+                    ->delete($db->quoteName('#__adsmanager_premium_ads'))
+                    ->where($db->quoteName('id') . ' = ' . (int)$id);
+
+        $db->setQuery($query);
+        try {
+            return $db->execute();
+        } catch (Exception $e) {
+            return false;
+        }
+    }
 
 }

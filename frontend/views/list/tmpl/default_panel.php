@@ -10,7 +10,19 @@ defined('_JEXEC') or die('Restricted access');
     <?php if (!empty($this->premiumAds)): ?>
         <table class="table w-100">
             <tbody>
-            <?php foreach($this->premiumAds as $ad): 
+            <?php 
+            $now = new DateTime(); // aktuálny čas
+            foreach($this->premiumAds as $ad): 
+
+                // kontrola platnosti podľa dátumu
+                $activeFrom = !empty($ad->active_from) ? new DateTime($ad->active_from) : null;
+                $activeTo   = !empty($ad->active_to)   ? new DateTime($ad->active_to)   : null;
+
+                if (($activeFrom && $activeFrom > $now) || ($activeTo && $activeTo < $now)) {
+                    // inzerát ešte nezačal alebo už skončil -> preskočíme
+                    continue;
+                }
+
                 $linkTarget = !empty($ad->url) 
                     ? $ad->url 
                     : TRoute::_("index.php?option=com_adsmanager&view=details&id=".$ad->id."&catid=".$ad->catid);
@@ -21,7 +33,6 @@ defined('_JEXEC') or die('Restricted access');
                     <!-- Ľavý stĺpec: obrázok -->
                     <td style="width: 35%; vertical-align: top; padding: 15px; text-align:center;">
                         <?php
-                        // Zistíme, či máme platnú URL obrázku
                         $imgSrc = !empty($ad->image) ? htmlspecialchars($ad->image) : ADSMANAGER_NOPIC_IMG;
                         ?>
                         <a href="<?php echo $linkTarget; ?>">
@@ -46,6 +57,11 @@ defined('_JEXEC') or die('Restricted access');
                             <!-- Popis -->
                             <?php if (!empty($ad->description)): ?>
                                 <div class="mb-2 text-muted"><?php echo nl2br(htmlspecialchars($ad->description)); ?></div>
+                            <?php endif; ?>
+
+                            <!-- Cena -->
+                            <?php if (!empty($ad->price)): ?>
+                                <div class="mb-2 fw-bold"><?php echo htmlspecialchars($ad->price); ?> €</div>
                             <?php endif; ?>
 
                             <!-- Dátum + views -->

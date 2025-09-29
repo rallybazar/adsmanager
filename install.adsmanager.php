@@ -829,6 +829,7 @@ class Com_AdsmanagerInstallerScript
 	  `userid` int(10) unsigned DEFAULT NULL,
 	  `headline` text NOT NULL,
 	  `description` text,
+	  `price` text,
 	  `image` text,
 	  `url` text NOT NULL,
 	  `custom_html` mediumtext,

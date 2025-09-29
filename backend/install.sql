@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `#__adsmanager_premium_ads` (
   `userid` int(10) unsigned DEFAULT NULL,    -- majiteľ (voliteľné, môže byť NULL)
   `headline` text NOT NULL,                  -- nadpis inzerátu / reklamy
   `description` text,                        -- krátky text (voliteľné)
+  `price` text,                              -- cena 
   `image` text,                              -- cesta k obrázku (môže byť aj GIF)
   `url` text NOT NULL,                       -- cieľový odkaz (interný detail inzerátu alebo externý link)
   `custom_html` mediumtext,                  -- voliteľné: úplný vlastný HTML blok (bannery, embed)

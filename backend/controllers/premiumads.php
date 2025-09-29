@@ -175,6 +175,27 @@ class AdsmanagerControllerPremiumads extends TController
         $app->redirect('index.php?option=com_adsmanager&c=premiumads', JText::_('COM_ADSMANAGER_PREMIUM_AD_REMOVED'), 'message');
     }
 
+    public function delete()
+    {
+        // Získame ID zvolených inzerátov
+        $cid = $this->input->post->get('cid', array(), 'array');
+
+        if(!empty($cid)) {
+            $model = $this->getModel('Premiumads');
+
+            foreach($cid as $id) {
+                $model->deleteItem((int)$id);
+            }
+
+            $this->setMessage(JText::plural('COM_ADSMANAGER_N_ITEMS_DELETED', count($cid)));
+        } else {
+            $this->setMessage(JText::_('COM_ADSMANAGER_NO_ITEM_SELECTED'), 'warning');
+        }
+
+        // Presmerovanie späť na zoznam
+        $this->setRedirect(JRoute::_('index.php?option=com_adsmanager&c=premiumads', false));
+    }
+
     function publish() { $this->_changeState(1); }
     function unpublish() { $this->_changeState(0); }
 
