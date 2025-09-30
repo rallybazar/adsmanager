@@ -7,12 +7,16 @@
 defined('_JEXEC') or die('Restricted access');
 ?>
 <div class="container-fluid">
-    <?php if (!empty($this->premiumAds)): ?>
+    <?php 
+    // zobrazíme prémiové inzeráty len ak NElistujeme inzeráty konkrétneho používateľa
+    $showPremium = empty($this->userid) && (empty($this->filters['userid']));
+
+    if ($showPremium && !empty($this->premiumAds)): ?>
         <table class="table w-100">
             <tbody>
             <?php 
             $now = new DateTime(); // aktuálny čas
-            foreach($this->premiumAds as $ad): 
+            foreach($this->premiumAds as $ad):
 
                 // kontrola platnosti podľa dátumu
                 $activeFrom = !empty($ad->active_from) ? new DateTime($ad->active_from) : null;
