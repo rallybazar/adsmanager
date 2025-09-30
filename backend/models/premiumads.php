@@ -100,6 +100,7 @@ class AdsmanagerModelPremiumads extends TModel
         if ($id) {
             // UPDATE
             $fields = array(
+                $db->quoteName('adid') . ' = ' . (int)$data['adid'],
                 $db->quoteName('userid') . ' = ' . (int)$data['userid'],
                 $db->quoteName('headline') . ' = ' . $db->quote($data['headline']),
                 $db->quoteName('description') . ' = ' . $db->quote($data['description']),
@@ -120,6 +121,7 @@ class AdsmanagerModelPremiumads extends TModel
         } else {
             // INSERT
             $columns = array(
+                'adid',
                 'userid',
                 'headline',
                 'description',
@@ -134,6 +136,7 @@ class AdsmanagerModelPremiumads extends TModel
             );
 
             $values = array(
+                (int)$data['adid'],
                 (int)$data['userid'],
                 $db->quote($data['headline']),
                 $db->quote($data['description']),

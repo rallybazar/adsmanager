@@ -133,6 +133,18 @@ class AdsmanagerViewMyads extends TView
 			}
 			$this->assignRef('topoption',$topoption);
 		}
+
+		// označíme, či je inzerát prémiový
+		$db = JFactory::getDbo();
+		foreach ($contents as &$c) {
+			$query = $db->getQuery(true)
+				->select('COUNT(*)')
+				->from($db->quoteName('#__adsmanager_premium_ads'))
+				->where($db->quoteName('adid') . ' = ' . (int)$c->id);
+			$db->setQuery($query);
+			$count = (int) $db->loadResult();
+			$c->is_premium = $count > 0;
+		}
 		
 		parent::display($tpl);
 	}

@@ -9,7 +9,12 @@ defined('_JEXEC') or die('Restricted access');
 <div class="container-fluid">
     <?php 
     // zobrazíme prémiové inzeráty len ak NElistujeme inzeráty konkrétneho používateľa
-    $showPremium = empty($this->userid) && (empty($this->filters['userid']));
+    $app = JFactory::getApplication();
+
+    $input = $app->input; // JInput objekt
+    $userIdView = (int) $input->get('user', 0, 'INT');
+
+    $showPremium = ($userIdView === 0);
 
     if ($showPremium && !empty($this->premiumAds)): ?>
         <table class="table w-100">

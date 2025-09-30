@@ -1333,15 +1333,15 @@ class AdsManagerController extends TController
 		$confmodel =$this->getModel( "configuration" );
 		$conf = $confmodel->getConfiguration();
 
-		$c = $contentmodel->getContent($contentid,false);
-		if ($c == null)
+		$content = $contentmodel->getContent($contentid,false);
+		if ($content == null)
 			exit();
 
-		if ($c->expiration_date == null) {
+		if ($content->expiration_date == null) {
 			exit();
 		}
 
-		$expiration_time = strtotime($c->expiration_date);
+		$expiration_time = strtotime($content->expiration_date);
 		$current_time = time();
 
 		if (function_exists("renewPaidAd")) {
@@ -1624,13 +1624,7 @@ class AdsManagerController extends TController
 		echo JUri::base()."/".$path.$src.'?'.$updateTime;exit();
 	}
 
-	public function testFunction()
-    {
-        $app = JFactory::getApplication();
-        $app->enqueueMessage('Restoring your ad.', 'message');
-    }
-
-    public function restoreAd()
+    public function restoread()
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
@@ -1700,6 +1694,108 @@ class AdsManagerController extends TController
 
 		$app->enqueueMessage(JText::_('COM_ADSMANAGER_RESTORE_SUCCESS'), 'message');
 		$app->redirect(JRoute::_('index.php?option=com_adsmanager&view=details&id='.(int)$id.'&catid='.(int)$currentCatid));
+	}
+
+	public function makepremium()
+	{
+		$app = JFactory::getApplication();
+		$contentid = JRequest::getInt('id', 0);
+
+		// Pridáme cestu k admin modelom
+		$this->addModelPath(JPATH_ADMINISTRATOR . DS . 'components' . DS . 'com_adsmanager' . DS . 'models');
+
+		// Načítame model content
+		$contentmodel = $this->getModel('content');
+		if (!$contentmodel) {
+			$app->enqueueMessage(JText::_('COM_ADSMANAGER_INVALID_AD_MODEL'), 'error');
+			$app->redirect('index.php?option=com_adsmanager&view=myads');
+			return;
+		}
+
+		// Získame inzerát
+		$content = $contentmodel->getContent($contentid, false);
+		if ($content == null) {
+			$app->enqueueMessage(JText::_('COM_ADSMANAGER_INVALID_AD_CONTENT'), 'error');
+			$app->redirect('index.php?option=com_adsmanager&view=myads');
+			return;
+		}
+
+		// Kontrola vlastníka
+		$user = JFactory::getUser();
+		if ($content->userid != $user->id) {
+			$app->enqueueMessage(JText::_('COM_ADSMANAGER_INVALID_AD_NOT_THIS_USER'), 'error');
+			$app->redirect('index.php?option=com_adsmanager&view=myads');
+			return;
+		}
+
+		// Pripravíme view pre makepremium
+		$view = $this->getView('makepremium', 'html');
+		$view->assignRef('content', $content); // tu priradíme content do view
+		$view->display();
+	}
+
+	public function sendpremiumrequest()
+	{
+		// Kontrola tokenu
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+		$app  = JFactory::getApplication();
+		$data = $app->input->getArray($_POST);
+
+		$adid    = (int)$data['adid'];
+		$userid  = (int)$data['userid'];
+		$comment = isset($data['user_comment']) ? $data['user_comment'] : '';
+		$price   = isset($data['price']) ? (float)$data['price'] : 0;
+
+		$headline    = isset($data['headline']) ? $data['headline'] : '';
+		$description = isset($data['description']) ? $data['description'] : '';
+		$url         = JRoute::_('index.php?option=com_adsmanager&view=details&id='.$adid.'&catid=0', false);
+
+		// Správny úplný odkaz
+		$adLink = JUri::base() . ltrim($url, '/');
+
+		$db = JFactory::getDbo();
+
+		// Predzápis do tabuľky
+		$columns = ['adid','userid','headline','description','url','custom_html','active_from','published','price'];
+		$values  = [
+			(int)$adid,
+			(int)$userid,
+			$db->quote($headline),
+			$db->quote($description),
+			$db->quote($adLink),
+			$db->quote($comment),
+			$db->quote(date('Y-m-d H:i:s')),
+			0,
+			$price
+		];
+
+		$query = $db->getQuery(true)
+			->insert($db->quoteName('#__adsmanager_premium_ads'))
+			->columns($db->quoteName($columns))
+			->values(implode(',', $values));
+
+		$db->setQuery($query);
+		$db->execute();
+
+		// Email pre admina
+		$mailer = JFactory::getMailer();
+		$config = JFactory::getConfig();
+		$adminEmail = $config->get('mailfrom');
+		$siteName   = $config->get('sitename');
+
+		$subject = $siteName . ": premium ad request";
+		$body    = "User ID: $userid requested premium for ad ID: $adid\n";
+		$body   .= "Ad link: $adLink\n";
+		$body   .= "Headline: $headline\n";
+		$body   .= "Description: $description\n";
+		$body   .= "Price: $price €\n";
+		$body   .= "User comment: $comment\n";
+
+		$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $adminEmail, $subject, $body);
+
+		$app->enqueueMessage(JText::_('COM_ADSMANAGER_PREMIUM_REQUEST_SENT'));
+		$app->redirect('index.php?option=com_adsmanager&view=myads');
 	}
 
 }

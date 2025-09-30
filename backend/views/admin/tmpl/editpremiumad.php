@@ -19,11 +19,19 @@ $ad = isset($this->content) ? $this->content : null;
 
 <table class="adminform">
 
+<!-- Ad ID -->
+<tr>
+    <td><?php echo JText::_('COM_ADSMANAGER_AD_ID'); ?></td>
+    <td>
+        <input type="number" name="adid" value="<?php echo (int)@$ad->adid; ?>" />
+    </td>
+</tr>
+
 <!-- User -->
 <tr>
     <td><?php echo JText::_('COM_ADSMANAGER_TH_USER'); ?></td>
     <td>
-        <select name="userid" id="userid" class="required">
+        <select name="userid" id="userid">
             <option value=""><?php echo JText::_('COM_ADSMANAGER_SELECT_USER');?></option>
             <?php foreach($this->users as $user): ?>
                 <option value="<?php echo $user->id;?>" <?php echo ($user->id == @$ad->userid) ? "selected" : ""; ?>>

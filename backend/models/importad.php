@@ -184,7 +184,7 @@ class AdsmanagerModelImportad extends TModel
         }
 
         // Priamy link na obnovenie
-        $restoreLink = JURI::root() . 'index.php?option=com_adsmanager&c=restoread&task=restoreAd&id=' . (int)$ad->id;
+        $restoreLink = JURI::root() . 'index.php?option=com_adsmanager&c=restoread&task=restoread&id=' . (int)$ad->id;
 
         $name = htmlspecialchars($ad->name, ENT_QUOTES, 'UTF-8');
 

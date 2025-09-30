@@ -175,36 +175,41 @@ defined('_JEXEC') or die( 'Restricted access' );
                     </td>
                     <td class="tdcenter">
                         <?php
+                        // Edit
                         $target = TRoute::_("index.php?option=com_adsmanager&task=write&catid=".$content->catid."&id=$content->id");
-                        echo "<a href='".$target."'>".JText::_('ADSMANAGER_CONTENT_EDIT')."</a>";
-                        echo "<br/>";
-                        echo "<br/>";
+                        echo "<a href='".$target."' class='btn btn-primary mb-1'>".JText::_('ADSMANAGER_CONTENT_EDIT')."</a><br/>";
+
+                        // Delete
                         $target = TRoute::_("index.php?option=com_adsmanager&task=delete&catid=".$content->catid."&id=$content->id");
-                        echo "<a onclick='return confirm(\"".htmlspecialchars(JText::_('ADSMANAGER_CONFIRM_DELETE'),ENT_QUOTES)."\")' href='".$target."'>".JText::_('ADSMANAGER_CONTENT_DELETE')."</a>";
-                        if (ADSMANAGER_SPECIAL == "duplicate"){
-                            echo "<br/>";
-                            $target = TRoute::_("index.php?option=com_adsmanager&task=duplicate&catid=".$content->catid."&id=$content->id");
-                            echo "<a href='".$target."'>".JText::_('ADSMANAGER_CONTENT_DUPLICATE')."</a>";
-                        }
-                        if ($this->conf->expiration == 1) { 
-                            if ($content->expiration_date != null) {
-                                $expiration_time = strtotime($content->expiration_date);
-                                $current_time = time();
-                                if ($expiration_time - $current_time <= ($conf->recall_time * 3600 *24)) {
-                                    if(function_exists('countRenewDurations') && countRenewDurations() > 1){
-                                        $target = TRoute::_("index.php?option=com_adsmanager&view=expiration&id=$content->id");
-                                    } else {
-                                        $target = TRoute::_("index.php?option=com_adsmanager&task=renew&id=$content->id");
-                                    }
-                                    echo "<br/><a href='".$target."'>".JText::_('ADSMANAGER_RENEW_CONTENT')."</a>";
-                                }
-                            }
+                        echo "<a onclick='return confirm(\"".htmlspecialchars(JText::_('ADSMANAGER_CONFIRM_DELETE'),ENT_QUOTES)."\")' href='".$target."' class='btn btn-danger mb-1'>".JText::_('ADSMANAGER_CONTENT_DELETE')."</a><br/>";
+
+                        // Make Premium / Is Premium
+                        if ($ad->is_premium) {
+                            echo "<a href='javascript:void(0);' class='btn btn-warning mb-1 disabled'>".JText::_('COM_ADSMANAGER_IS_PREMIUM')."</a><br/>";
+                        } else {
+                            $target = JRoute::_('index.php?option=com_adsmanager&task=makepremium&id='.$content->id);
+                            echo "<a href='".$target."' class='btn btn-success mb-1'>".JText::_('COM_ADSMANAGER_MAKE_PREMIUM')."</a><br/>";
                         }
 
-                        /*if (isset($this->topoption)) {
-                            $target = TRoute::_('index.php?option=com_paidsystem&task=bringtotop&id='.$content->id);
-                            echo "<br/><a href='".$target."'>".JText::_('PAIDSYSTEM_TOP_ONE_SHOT')."</a>";
-                        }*/	
+                        // Duplicate (optional)
+                        if (ADSMANAGER_SPECIAL == "duplicate") {
+                            $target = TRoute::_("index.php?option=com_adsmanager&task=duplicate&catid=".$content->catid."&id=$content->id");
+                            echo "<a href='".$target."' class='btn btn-secondary mb-1'>".JText::_('ADSMANAGER_CONTENT_DUPLICATE')."</a><br/>";
+                        }
+
+                        // Renew (optional)
+                        if ($this->conf->expiration == 1 && $content->expiration_date != null) {
+                            $expiration_time = strtotime($content->expiration_date);
+                            $current_time = time();
+                            if ($expiration_time - $current_time <= ($conf->recall_time * 3600 *24)) {
+                                if(function_exists('countRenewDurations') && countRenewDurations() > 1){
+                                    $target = TRoute::_("index.php?option=com_adsmanager&view=expiration&id=$content->id");
+                                } else {
+                                    $target = TRoute::_("index.php?option=com_adsmanager&task=renew&id=$content->id");
+                                }
+                                echo "<a href='".$target."' class='btn btn-info mb-1'>".JText::_('ADSMANAGER_RENEW_CONTENT')."</a><br/>";
+                            }
+                        }
                         ?>
                     </td>
                 </tr>
