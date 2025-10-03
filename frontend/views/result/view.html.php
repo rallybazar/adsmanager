@@ -316,6 +316,41 @@ class AdsmanagerViewResult extends TView
 			$this->banners = false;
 		}
 
+		// --- Načítanie prémiových inzerátov ---
+		$this->premiumAds = array();
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->select('*')
+			->from($db->quoteName('#__adsmanager_premium_ads'))
+			->where($db->quoteName('published') . ' = 1'); // iba publikované
+		$db->setQuery($query);
+		$allPremium = $db->loadObjectList();
+
+		if (!empty($allPremium)) {
+			$now = new DateTime();
+			$searchText = trim($tsearch);
+			$needle = mb_strtolower($searchText);
+
+			foreach ($allPremium as $ad) {
+				// kontrola platnosti podľa dátumu
+				$activeFrom = !empty($ad->active_from) ? new DateTime($ad->active_from) : null;
+				$activeTo   = !empty($ad->active_to)   ? new DateTime($ad->active_to)   : null;
+				if (($activeFrom && $activeFrom > $now) || ($activeTo && $activeTo < $now)) continue;
+
+				// kontrola vyhľadávania
+				if ($searchText !== '') {
+					$headline    = mb_strtolower($ad->headline);
+					$description = mb_strtolower($ad->description);
+					if (mb_strpos($headline, $needle) === false && mb_strpos($description, $needle) === false) {
+						continue; // nepridávať, ak nesedí vyhľadávanie
+					}
+				}
+
+				$this->premiumAds[] = $ad;
+			}
+		}
+
 		parent::display($tpl);
 	}
 	

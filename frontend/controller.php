@@ -1736,7 +1736,6 @@ class AdsManagerController extends TController
 
 	public function sendpremiumrequest()
 	{
-		// Kontrola tokenu
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		$app  = JFactory::getApplication();
@@ -1749,24 +1748,43 @@ class AdsManagerController extends TController
 
 		$headline    = isset($data['headline']) ? $data['headline'] : '';
 		$description = isset($data['description']) ? $data['description'] : '';
-		$url         = JRoute::_('index.php?option=com_adsmanager&view=details&id='.$adid.'&catid=0', false);
 
-		// Správny úplný odkaz
-		$adLink = JUri::base() . ltrim($url, '/');
+		// --- Správny link na inzerát ---
+		$url = JRoute::_('index.php?option=com_adsmanager&view=details&id='.$adid.'&catid=0', false);
+		$adLink = JUri::root() . ltrim($url, '/');
 
 		$db = JFactory::getDbo();
 
-		// Predzápis do tabuľky
-		$columns = ['adid','userid','headline','description','url','custom_html','active_from','published','price'];
+		// --- Načítame obrázky inzerátu ---
+		$query = $db->getQuery(true)
+			->select($db->quoteName('images'))
+			->from($db->quoteName('#__adsmanager_ads'))
+			->where('id = ' . (int)$adid);
+		$db->setQuery($query);
+		$adImages = $db->loadResult();
+
+		$imageUrl = '';
+		if (!empty($adImages)) {
+			$images = json_decode($adImages, true);
+			if (json_last_error() === JSON_ERROR_NONE && is_array($images) && !empty($images)) {
+				if (!empty($images[0]['image'])) {
+					$imageUrl = JUri::root() . 'images/com_adsmanager/contents/' . $images[0]['image'];
+				}
+			}
+		}
+
+		// --- Zápis do tabuľky premium ads ---
+		$columns = ['adid','userid','headline','description','url','image','custom_html','active_from','published','price'];
 		$values  = [
 			(int)$adid,
 			(int)$userid,
 			$db->quote($headline),
 			$db->quote($description),
-			$db->quote($adLink),
+			$db->quote($adLink),      // URL inzerátu
+			$db->quote($imageUrl),    // obrázok
 			$db->quote($comment),
 			$db->quote(date('Y-m-d H:i:s')),
-			0,
+			0,                        // publikované = 0
 			$price
 		];
 
@@ -1778,7 +1796,7 @@ class AdsManagerController extends TController
 		$db->setQuery($query);
 		$db->execute();
 
-		// Email pre admina
+		// --- Email pre admina ---
 		$mailer = JFactory::getMailer();
 		$config = JFactory::getConfig();
 		$adminEmail = $config->get('mailfrom');
@@ -1791,6 +1809,9 @@ class AdsManagerController extends TController
 		$body   .= "Description: $description\n";
 		$body   .= "Price: $price €\n";
 		$body   .= "User comment: $comment\n";
+		if ($imageUrl) {
+			$body .= "Image: $imageUrl\n";
+		}
 
 		$mailer->sendMail($config->get('mailfrom'), $config->get('fromname'), $adminEmail, $subject, $body);
 

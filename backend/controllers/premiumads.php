@@ -225,4 +225,5 @@ class AdsmanagerControllerPremiumads extends TController
         }
         return true;
     }
+
 }

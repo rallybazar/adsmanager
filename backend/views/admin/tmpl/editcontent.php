@@ -331,9 +331,19 @@ foreach($this->fields as $field)
             onclick="window.location.href='index.php?option=com_adsmanager&c=contents&task=resetViews&id=<?php echo (int)$this->content->id; ?>'">
             <?php echo JText::_('COM_ADSMANAGER_RESET_VIEWS'); ?>
         </button>
+
+		<?php if ($ad->is_premium): ?>
+			<a href="javascript:void(0);" class="btn btn-warning mb-1 disabled">
+				<?php echo JText::_('COM_ADSMANAGER_IS_PREMIUM'); ?>
+			</a>
+		<?php else: ?>
+			<a href="<?php echo JRoute::_('index.php?option=com_adsmanager&c=contents&task=makepremium&id=' . (int)$this->content->id); ?>" 
+			class="btn btn-success mb-1">
+			<?php echo JText::_('COM_ADSMANAGER_MAKE_PREMIUM'); ?>
+			</a>
+		<?php endif; ?>
     </td>
 </tr>
-
 
 
 <?php if (($this->conf->metadata_mode != 'nometadata')&&

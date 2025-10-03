@@ -324,5 +324,77 @@ class AdsmanagerControllerContents extends TController
 		$this->setRedirect(JRoute::_('index.php?option=com_adsmanager&c=contents&task=edit&id=' . $id, false));
 	}
 
+	public function makepremium()
+	{
+		// POST alebo GET, nechcem token kvôli jednoduchosti admin akcie
+		$app = JFactory::getApplication();
+		$id  = $this->input->getInt('id', 0);
+
+		if ($id <= 0) {
+			$app->enqueueMessage(JText::_('Invalid ad ID'), 'error');
+			$this->setRedirect('index.php?option=com_adsmanager&c=contents');
+			return;
+		}
+
+		$db = JFactory::getDbo();
+
+		// --- Načítame inzerát ---
+		$query = $db->getQuery(true)
+			->select($db->quoteName(['id','userid','ad_headline','ad_text','ad_price','images']))
+			->from($db->quoteName('#__adsmanager_ads'))
+			->where('id = ' . (int)$id);
+		$db->setQuery($query);
+		$adData = $db->loadObject();
+
+		if (!$adData) {
+			$app->enqueueMessage(JText::_('Ad not found'), 'error');
+			$this->setRedirect('index.php?option=com_adsmanager&c=contents');
+			return;
+		}
+
+		// --- Rozparsujeme obrázky ---
+		$imageUrl = '';
+		if (!empty($adData->images)) {
+			$images = json_decode($adData->images, true);
+			if (json_last_error() === JSON_ERROR_NONE && is_array($images) && !empty($images)) {
+				if (!empty($images[0]['image'])) {
+					$imageUrl = JUri::root() . 'images/com_adsmanager/contents/' . $images[0]['image'];
+				}
+			}
+		}
+
+		// --- Link na front-end inzerát ---
+		$adLink = JUri::root() . 'index.php?option=com_adsmanager&view=details&id=' . (int)$adData->id . '&catid=0';
+
+		// --- Zápis do tabuľky premium ads ---
+		$columns = ['adid','userid','headline','description','url','image','published','active_from','price'];
+		$values  = [
+			(int)$adData->id,
+			(int)$adData->userid,
+			$db->quote($adData->ad_headline),
+			$db->quote(mb_substr($adData->ad_text, 0, 200)),
+			$db->quote($adLink),       // URL inzerátu
+			$db->quote($imageUrl),     // obrázok
+			0,                         // ešte nie je publikovaný
+			$db->quote(date('Y-m-d H:i:s')),
+			(float)$adData->ad_price
+		];
+
+		$query = $db->getQuery(true)
+			->insert($db->quoteName('#__adsmanager_premium_ads'))
+			->columns($db->quoteName($columns))
+			->values(implode(',', $values));
+		$db->setQuery($query);
+
+		try {
+			$db->execute();
+			$app->enqueueMessage(JText::_('Ad marked as premium successfully'), 'message');
+		} catch (Exception $e) {
+			$app->enqueueMessage('DB error: '.$e->getMessage(), 'error');
+		}
+
+		$this->setRedirect('index.php?option=com_adsmanager&c=contents');
+	}
+
 }
 
